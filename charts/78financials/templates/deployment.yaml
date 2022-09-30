@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.name | quote }}
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.name | quote }}
+  template:
+    metadata:
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+      labels:
+        app: {{ .Values.deployment.name | quote }}
+    spec:
+      containers:
+        - name: {{ .Values.deployment.name | quote }}
+          image: {{ .Values.deployment.image }}:{{ .Values.deployment.tag }}
+          imagePullPolicy: {{ .Values.deployment.pullPolicy }}
+          ports:
+          - containerPort: {{ .Values.deployment.port }}
+          {{- if .Values.volume.bind }}
+          volumeMounts:
+          - name: {{ .Values.deployment.name | quote }}
+            mountPath: {{ .Values.volume.path }}
+          {{- end }}
+          {{- if .Values.env }}
+          envFrom:
+            {{- if .Values.env.secret.create }}
+            - secretRef:
+                name: {{ .Values.deployment.name | quote }}
+            {{- end}}
+            {{- if .Values.env.configmap.create }}
+            - configMapRef:
+                name: {{ .Values.deployment.name | quote }}
+            {{- end}}
+          {{- end }}
+          {{- if .Values.resources }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- else }}
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "50Mi"
+            limits:
+              cpu: "50m"
+              memory: "100Mi"
+          {{- end }}
+      {{- if .Values.pvc.create }}
+      volumes:
+      - name: {{ .Values.deployment.name | quote }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvc.name }}
+      {{- end}}
+      {{- if .Values.environment }}
+      nodeSelector:
+        environment: {{ .Values.environment.name | quote }}
+      {{- end }}
+      {{- if .Values.tolerations.enabled }}
+      tolerations:
+      - key: "kubernetes.azure.com/scalesetpriority"
+        operator: "Equal"
+        value: "spot"
+        effect: "PreferNoSchedule"
+      - key: "kubernetes.azure.com/scalesetpriority"
+        operator: "Equal"
+        value: "spot"
+        effect: "NoSchedule"
+      {{- end }}
+      imagePullSecrets:
+        - name: regcred
