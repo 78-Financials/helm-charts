@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  78financials:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-09-30T11:52:09.839681407Z"
+    description: A Helm chart for Kubernetes
+    digest: 89c3fc201420fb961c821bac53629be01e0cb1aec38bc08bc4b59f7051201c80
+    name: 78financials
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/78financials-0.0.1/78financials-0.0.1.tgz
+    version: 0.0.1
+generated: "2022-09-30T11:52:09.839818112Z"
