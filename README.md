@@ -1,5 +1,6 @@
 # helm-charts
-Helm chart repository
+Helm chart repository   
+[![Release Charts](https://github.com/78-Financials/helm-charts/actions/workflows/release.yaml/badge.svg)](https://github.com/78-Financials/helm-charts/actions/workflows/release.yaml)
 
 ## Usage
 
