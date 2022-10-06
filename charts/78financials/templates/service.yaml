@@ -3,6 +3,11 @@ kind: Service
 metadata:
   name: {{ .Values.deployment.name | quote }}
   namespace: {{ .Values.namespace | quote }}
+  {{- if .Values.service.annotations.enabled }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-alpn-policy: "HTTP2Preferred"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "https"
+  {{- end }}
 spec:
   selector:
     app: {{ .Values.deployment.name | quote}}

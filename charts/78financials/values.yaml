@@ -41,7 +41,7 @@ service:
     http: 80
     https: 443
   annotations:
-    enabled: false # Set as `true` for apis that uses internal loadbalancer with apim
+    enabled: false # Set as `true` for apis that uses http/2
 
 # Environment Variables sources
 env:
