@@ -24,6 +24,16 @@ entries:
   ingress:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2023-04-11T09:28:13.193085658Z"
+    description: A Helm chart for Kubernetes
+    digest: c3de2c134ca7b51c2995a9e19cb8c3aadd38930d83e7548971f72e852233cf4f
+    name: ingress
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/ingress-0.1.1/ingress-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2023-03-10T12:21:49.329699473Z"
     description: A Helm chart for Kubernetes
     digest: 55f1bdbf710e08604b3463c7644baf2650021b51f4672e0d1e255b018ea8cc0b
@@ -32,4 +42,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/ingress-0.1.0/ingress-0.1.0.tgz
     version: 0.1.0
-generated: "2023-03-10T12:21:49.329710073Z"
+generated: "2023-04-11T09:28:13.193094058Z"
