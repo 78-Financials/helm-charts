@@ -24,6 +24,16 @@ entries:
   ingress:
   - apiVersion: v2
     appVersion: 1.0.0
+    created: "2023-04-11T17:16:24.153991729Z"
+    description: A Helm chart for Kubernetes
+    digest: ac77f5967d38b743ceec2c20c3424dd1a75df4e7946cfa4fcaec7e4378846687
+    name: ingress
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/ingress-0.1.2/ingress-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: 1.0.0
     created: "2023-04-11T09:28:13.193085658Z"
     description: A Helm chart for Kubernetes
     digest: c3de2c134ca7b51c2995a9e19cb8c3aadd38930d83e7548971f72e852233cf4f
@@ -45,6 +55,16 @@ entries:
   rove10:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-04-11T17:16:24.321494796Z"
+    description: A Helm chart for Kubernetes
+    digest: 0d5bd7577a7bbc6007ec6644355dfb14c26be5696a45324b81ce010ff1c5d9d5
+    name: rove10
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.1/rove10-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-04-11T10:49:02.130015549Z"
     description: A Helm chart for Kubernetes
     digest: 4a5cc2c8d489c2280feefc8df7fd5768a56ec8b5e5375f7a59d71fb9f8849448
@@ -53,4 +73,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2023-04-11T10:49:02.130051449Z"
+generated: "2023-04-11T17:16:24.321518696Z"
