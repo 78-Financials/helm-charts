@@ -42,4 +42,15 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/ingress-0.1.0/ingress-0.1.0.tgz
     version: 0.1.0
-generated: "2023-04-11T09:28:13.193094058Z"
+  rove10:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2023-04-11T10:49:02.130015549Z"
+    description: A Helm chart for Kubernetes
+    digest: 4a5cc2c8d489c2280feefc8df7fd5768a56ec8b5e5375f7a59d71fb9f8849448
+    name: rove10
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
+    version: 0.1.0
+generated: "2023-04-11T10:49:02.130051449Z"
