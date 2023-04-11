@@ -1,0 +1,88 @@
+# Default values for rove10.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Deployment
+deployment:
+  image: "nginx"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+  replicas: 1
+  port: 80
+  name: "nginx"
+
+# Namespace
+namespace: "development"
+
+# Resources
+resources:
+  requests:
+    cpu: "50m"
+    memory: "50Mi"
+  limits:
+    memory: "100Mi"
+
+# Environment
+environment: {}
+  # uncomment name below to set environment variables to `Staging` or `Production`. Development does not have a label
+  # Must be set to `Production` for production deployments and `Staging` for staging deployments.
+  # name: "Staging | Production"
+
+# Tolerations
+tolerations:
+  enabled: false # set to `false` for development alone. Must be `true` for Staging and Production
+
+# Service
+service:
+  type: NodePort # NodePort, LoadBalancer, ClusterIP
+  protocol:
+    name: TCP
+    http: 80
+  annotations:
+    enabled: false # Set as `true` for apis that uses http/2
+    annotations: {}
+
+# Environment Variables sources
+env:
+  secret:
+    # set to `true` to create a secret with the environment variables. Secret name is same with the deployment name.
+    # data should contain key value pairs in the format of "key":"value".
+    create: true
+    data: 
+      {"name":"Peters"}
+  configmap:
+    # set to `true` to create a configmap with the environment variables. Configmap name is same with the deployment name.
+    # data should contain key value pairs in the format of "key":"value".
+    create: true 
+    data: 
+      {"name":"Peters"}
+
+# autoscaling
+# This is used for scaling pods horizontally.
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+# persistent volume
+pv:
+  # uncomment below to set persistent volume
+  create: false # true: create pv | false: do not create pvc
+  name: "rove10-pv"
+  size: 8Gi
+  path: "/var/lib/rove10"
+  storageClass: "standard"
+
+# volume
+volume:
+  bind: false # set to `true` to bind a volume. Note that `pvc.create` must be set to true for the data to be persistent.
+  path: "/mnt/data" # Set to the correct path your application needs.
+
+# persistent volume claim
+pvc:
+  create: false # true: create pvc | false: do not create pvc. Note that `volume.bind` must be true for this to be bond to a pod.
+  name: "rove10-pvc"
+  size: 8Gi
+  storageClass: "standard"
