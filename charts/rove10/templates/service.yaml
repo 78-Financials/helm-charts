@@ -15,8 +15,4 @@ spec:
       protocol: {{ .Values.service.protocol.name}}
       port: {{ .Values.service.protocol.http }}
       targetPort: {{ .Values.deployment.port }}
-    - name: https
-      protocol: {{ .Values.service.protocol.name}}
-      port: {{ .Values.service.protocol.http }}
-      targetPort: {{ .Values.deployment.port }}
   type: {{ .Values.service.type }}
