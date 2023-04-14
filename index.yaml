@@ -75,6 +75,16 @@ entries:
   rove10:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-04-14T16:48:37.563216838Z"
+    description: A Helm chart for Kubernetes
+    digest: 33714e8e87c751dfed4bd379c03de2f6ef58c21715cc687f3bef26b8a6cb2b4d
+    name: rove10
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.5/rove10-0.1.5.tgz
+    version: 0.1.5
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-04-14T14:12:03.115523659Z"
     description: A Helm chart for Kubernetes
     digest: eebf0307ccd3275ca89c775ee959c7956cfdc44fe9a72556aca03aeb24d2bfd3
@@ -123,4 +133,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2023-04-14T14:12:03.115709862Z"
+generated: "2023-04-14T16:48:37.564416226Z"
