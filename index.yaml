@@ -3,6 +3,16 @@ entries:
   78financials:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-04-20T17:21:11.730228974Z"
+    description: A Helm chart for Kubernetes
+    digest: 720591e0700c20e71fedc72b71278009c123227bdd6fb4c4e53388a2918782c9
+    name: 78financials
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/78financials-1.0.1/78financials-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2022-10-06T09:17:51.985974755Z"
     description: A Helm chart for Kubernetes
     digest: 16ff270a782877a83117cfbed96b0cca5de455fa57b6862126c91054e91c5dd8
@@ -133,4 +143,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2023-04-14T16:48:37.564416226Z"
+generated: "2023-04-20T17:21:11.730256575Z"
