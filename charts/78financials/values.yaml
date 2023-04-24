@@ -38,7 +38,6 @@ service:
   protocol:
     name: TCP
     http: 80
-    https: 443
   annotations:
     enabled: false # Set as `true` for apis that uses http/2
 

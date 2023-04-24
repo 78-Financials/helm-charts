@@ -15,8 +15,10 @@ spec:
       protocol: {{ .Values.service.protocol.name}}
       port: {{ .Values.service.protocol.http }}
       targetPort: {{ .Values.deployment.port }}
-    # - name: https
-    #   protocol: {{ .Values.service.protocol.name}}
-    #   port: {{ .Values.service.protocol.https }}
-    #   targetPort: {{ .Values.deployment.port }}
+    {{- if .Values.service.protocol.https }}
+    - name: https
+      protocol: {{ .Values.service.protocol.name}}
+      port: {{ .Values.service.protocol.https }}
+      targetPort: {{ .Values.deployment.port }}
+    {{- end}}
   type: {{ .Values.service.type }}
