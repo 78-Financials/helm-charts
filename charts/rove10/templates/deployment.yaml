@@ -8,7 +8,6 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.deployment.name | quote }}
-      version: {{ .Values.deployment.tag | quote }}
   template:
     metadata:
       annotations:
