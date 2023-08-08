@@ -102,6 +102,17 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/ingress-0.1.0/ingress-0.1.0.tgz
     version: 0.1.0
+  payaza:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2023-08-08T20:11:01.87312952Z"
+    description: A Helm chart for Kubernetes
+    digest: 52f770d71c9f8b470b1c508a10823c57c5f7fa49c1086352e6af22c87c39b9df
+    name: payaza
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.1.0/payaza-0.1.0.tgz
+    version: 0.1.0
   rove10:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -193,4 +204,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2023-04-25T10:19:58.821763254Z"
+generated: "2023-08-08T20:11:01.873166721Z"
