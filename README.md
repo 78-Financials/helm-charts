@@ -30,6 +30,15 @@ the latest versions of the packages.  You can then run `helm search repo
 ```bash
 helm template 78financials charts/78financials/ --values charts/78financials/values.yaml
 ```
+
 ```bash
 helm upgrade --install nginx charts/78financials/ --values charts/78financials/values.yaml
+```
+
+```bash
+helm template payaza charts/payaza/ --values charts/payaza/values.yaml
+```
+
+```bash
+helm upgrade --install nginx charts/payaza/ --values charts/payaza/values.yaml
 ```
