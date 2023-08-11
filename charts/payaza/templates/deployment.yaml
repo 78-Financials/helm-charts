@@ -33,9 +33,20 @@ spec:
             - secretRef:
                 name: {{ .Values.deployment.name | quote }}
             {{- end}}
+
+            {{- if .Values.additionalSecrets }}
+            # additional secrets
+            {{- toYaml .Values.additionalSecrets | nindent 12 }}
+            {{- end}}
+
             {{- if .Values.env.configmap.create }}
             - configMapRef:
                 name: {{ .Values.deployment.name | quote }}
+            {{- end}}
+
+            {{- if .Values.additionalConfigs }}
+            # additional configs
+            {{- toYaml .Values.additionalConfigs | nindent 12 }}
             {{- end}}
           {{- end }}
           {{- if .Values.resources }}

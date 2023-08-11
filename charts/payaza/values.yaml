@@ -46,15 +46,23 @@ env:
   secret:
     # set to `true` to create a secret with the environment variables. Secret name is same with the deployment name.
     # data should contain key value pairs in the format of "key":"value".
-    create: false
+    create: true
     data: 
       {}
   configmap:
     # set to `true` to create a configmap with the environment variables. Configmap name is same with the deployment name.
     # data should contain key value pairs in the format of "key":"value".
-    create: false 
+    create: true 
     data: 
       {}
+
+additionalSecrets: []
+  # - secretRef:
+  #     name: existing-secret-name
+
+additionalConfigs: []
+  # - configMapRef:
+  #     name:  existing-configMap-name
 
 # autoscaling
 # This is used for scaling pods horizontally.
