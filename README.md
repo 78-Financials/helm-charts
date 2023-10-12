@@ -32,6 +32,10 @@ helm template 78financials charts/78financials/ --values charts/78financials/val
 ```
 
 ```bash
+helm template ingress charts/ingress/ --values charts/ingress/values.yaml
+```
+
+```bash
 helm upgrade --install nginx charts/78financials/ --values charts/78financials/values.yaml
 ```
 
