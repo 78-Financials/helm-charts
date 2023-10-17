@@ -73,13 +73,9 @@ spec:
       {{- end }}
       {{- if .Values.tolerations.enabled }}
       tolerations:
-      - key: "kubernetes.azure.com/scalesetpriority"
+      - key: "environment"
         operator: "Equal"
-        value: "spot"
-        effect: "PreferNoSchedule"
-      - key: "kubernetes.azure.com/scalesetpriority"
-        operator: "Equal"
-        value: "spot"
+        value: {{ .Values.environment.name | quote }}
         effect: "NoSchedule"
       {{- end }}
       imagePullSecrets:

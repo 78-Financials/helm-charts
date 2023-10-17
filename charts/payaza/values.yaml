@@ -24,13 +24,13 @@ resources:
 
 # Environment
 environment: {}
-  # uncomment name below to set environment variables to `Staging` or `Production`. Development does not have a label
-  # Must be set to `Production` for production deployments and `Staging` for staging deployments.
-  # name: "Staging | Production"
+  # uncomment name below to set environment variables to `Sandbox` or `Production`.
+  # Must be set to `Production` for production deployments and `Sandbox` for staging and development deployments.
+  # name: "Sandbox | Production"
 
 # Tolerations
 tolerations:
-  enabled: false # set to `false` for development alone. Must be `true` for Staging and Production
+  enabled: false # defaults to `false`. Must be `true` for Production
 
 # Service
 service:
@@ -47,7 +47,7 @@ env:
   secret:
     # set to `true` to create a secret with the environment variables. Secret name is same with the deployment name.
     # data should contain key value pairs in the format of "key":"value".
-    create: true
+    create: false
     data: 
       {}
   configmap:
