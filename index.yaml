@@ -104,6 +104,16 @@ entries:
     version: 0.1.0
   payaza:
   - apiVersion: v2
+    appVersion: 1.1.0
+    created: "2024-01-12T21:14:21.441539074Z"
+    description: added canary deployment feature
+    digest: 92abb0ac7156730448ba1fdf535eedf56b4b15022f972eefcabfa8617696bee5
+    name: payaza
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.2.0/payaza-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v2
     appVersion: 1.0.2
     created: "2023-10-17T02:40:47.021199127Z"
     description: A Helm chart for Kubernetes
@@ -244,4 +254,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2023-10-17T02:40:47.021280628Z"
+generated: "2024-01-12T21:14:21.441599998Z"
