@@ -1,0 +1,199 @@
+---
+# Deployment
+{{- if .Values.deployment.canary }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: canary-{{ .Values.deployment.name}}
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: canary-{{ .Values.deployment.name }}
+  template:
+    metadata:
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+      labels:
+        app: canary-{{ .Values.deployment.name }}
+        version: {{ .Values.deployment.tag | quote }}
+    spec:
+      containers:
+        - name: {{ .Values.deployment.name | quote }}
+          image: {{ .Values.deployment.image }}:{{ .Values.deployment.tag }}
+          imagePullPolicy: {{ .Values.deployment.pullPolicy }}
+          ports:
+          - containerPort: {{ .Values.deployment.port }}
+          {{- if .Values.volume.bind }}
+          volumeMounts:
+          - name: {{ .Values.deployment.name | quote }}
+            mountPath: {{ .Values.volume.path }}
+          {{- end }}
+          {{- if .Values.env }}
+          envFrom:
+            {{- if .Values.env.secret.create }}
+            - secretRef:
+                name: {{ .Values.deployment.name | quote }}
+            {{- end}}
+
+            {{- if .Values.additionalSecrets }}
+            # additional secrets
+            {{- toYaml .Values.additionalSecrets | nindent 12 }}
+            {{- end}}
+
+            {{- if .Values.env.configmap.create }}
+            - configMapRef:
+                name: {{ .Values.deployment.name | quote }}
+            {{- end}}
+
+            {{- if .Values.additionalConfigs }}
+            # additional configs
+            {{- toYaml .Values.additionalConfigs | nindent 12 }}
+            {{- end}}
+          {{- end }}
+          {{- if .Values.resources }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- else }}
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "50Mi"
+            limits:
+              memory: "100Mi"
+          {{- end }}
+      {{- if .Values.pvc.create }}
+      volumes:
+      - name: {{ .Values.deployment.name | quote }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvc.name }}
+      {{- end}}
+      {{- if .Values.environment }}
+      nodeSelector:
+        environment: {{ .Values.environment.name | quote }}
+      {{- end }}
+      {{- if .Values.tolerations.enabled }}
+      tolerations:
+      - key: "environment"
+        operator: "Equal"
+        value: {{ .Values.environment.name | quote }}
+        effect: "NoSchedule"
+      {{- end }}
+      imagePullSecrets:
+        - name: regcred
+{{- end }}
+
+---
+# Service
+{{- if .Values.deployment.canary }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: canary-{{ .Values.deployment.name }}
+  namespace: {{ .Values.namespace }}
+  {{- if .Values.service.annotations.enabled }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-alpn-policy: "HTTP2Preferred"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "https"
+  {{- end }}
+spec:
+  selector:
+    app: canary-{{ .Values.deployment.name }}
+  ports:
+    - name: http
+      protocol: {{ .Values.service.protocol.name}}
+      port: {{ .Values.service.protocol.http }}
+      targetPort: {{ .Values.deployment.port }}
+    {{- if .Values.service.protocol.https }}
+    - name: https
+      protocol: {{ .Values.service.protocol.name}}
+      port: {{ .Values.service.protocol.https }}
+      targetPort: {{ .Values.deployment.port }}
+    {{- end}}
+  type: {{ .Values.service.type }}
+{{- end }}
+
+---
+# hpa
+{{- if .Values.deployment.canary }}
+{{- if .Values.autoscaling.enabled }}
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: canary-{{ .Values.deployment.name}}
+  namespace: {{ .Values.namespace }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: canary-{{.Values.deployment.name }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  targetCPUUtilizationPercentage: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+{{- end }}
+{{- end }}
+
+---
+# Ingress
+{{- if .Values.deployment.canary }}
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := .Values.deployment.name }}
+{{- $svcPort := .Values.service.protocol.http -}}
+{{- if .Values.ingress.useHttp2 -}}
+  {{- $svcPort = .Values.service.protocol.https -}}
+{{- end }}
+{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{- end }}
+{{- end }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: canary-{{ $fullName }}
+  namespace: {{ .Values.namespace | quote }}
+  labels:
+    {{- include "payaza.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: canary-{{ .host }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ .path }}
+            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            pathType: {{ .pathType }}
+            {{- end }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: canary-{{ $fullName }}
+                port:
+                  number: {{ $svcPort }}
+              {{- else }}
+              serviceName: canary-{{ $fullName }}
+              servicePort: {{ $svcPort }}
+              {{- end }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}
