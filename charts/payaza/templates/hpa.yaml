@@ -1,3 +1,4 @@
+{{- if not .Values.deployment.blueGreen }}
 {{- if .Values.autoscaling.enabled -}}
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
@@ -12,4 +13,5 @@ spec:
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   targetCPUUtilizationPercentage: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+{{- end -}}
 {{- end -}}

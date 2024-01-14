@@ -4,7 +4,7 @@
 
 # Deployment
 deployment:
-  canary: false
+  blueGreen: false
   image: "nginx"
   tag: "latest"
   pullPolicy: IfNotPresent
@@ -49,14 +49,13 @@ env:
     # set to `true` to create a secret with the environment variables. Secret name is same with the deployment name.
     # data should contain key value pairs in the format of "key":"value".
     create: false
-    data: 
-      {}
+    data: {}
+
   configmap:
     # set to `true` to create a configmap with the environment variables. Configmap name is same with the deployment name.
     # data should contain key value pairs in the format of "key":"value".
-    create: true 
-    data: 
-      {}
+    create: false 
+    data: {}
 
 additionalSecrets: []
   # - secretRef:

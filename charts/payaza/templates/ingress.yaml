@@ -1,3 +1,4 @@
+{{- if not .Values.deployment.blueGreen }}
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := .Values.deployment.name | quote -}}
 {{- $svcPort := .Values.service.protocol.http -}}
@@ -62,4 +63,5 @@ spec:
               {{- end }}
           {{- end }}
     {{- end }}
+{{- end }}
 {{- end }}

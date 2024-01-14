@@ -1,22 +1,22 @@
 ---
 # Deployment
-{{- if .Values.deployment.canary }}
+{{- if .Values.deployment.blueGreen }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: canary-{{ .Values.deployment.name}}
+  name: green-{{ .Values.deployment.name}}
   namespace: {{ .Values.namespace | quote }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
-      app: canary-{{ .Values.deployment.name }}
+      app: green-{{ .Values.deployment.name }}
   template:
     metadata:
       annotations:
         rollme: {{ randAlphaNum 5 | quote }}
       labels:
-        app: canary-{{ .Values.deployment.name }}
+        app: green-{{ .Values.deployment.name }}
         version: {{ .Values.deployment.tag | quote }}
     spec:
       containers:
@@ -86,11 +86,11 @@ spec:
 
 ---
 # Service
-{{- if .Values.deployment.canary }}
+{{- if .Values.deployment.green }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: canary-{{ .Values.deployment.name }}
+  name: green-{{ .Values.deployment.name }}
   namespace: {{ .Values.namespace }}
   {{- if .Values.service.annotations.enabled }}
   annotations:
@@ -99,7 +99,7 @@ metadata:
   {{- end }}
 spec:
   selector:
-    app: canary-{{ .Values.deployment.name }}
+    app: green-{{ .Values.deployment.name }}
   ports:
     - name: http
       protocol: {{ .Values.service.protocol.name}}
@@ -116,18 +116,18 @@ spec:
 
 ---
 # hpa
-{{- if .Values.deployment.canary }}
+{{- if .Values.deployment.blueGreen }}
 {{- if .Values.autoscaling.enabled }}
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: canary-{{ .Values.deployment.name}}
+  name: green-{{ .Values.deployment.name}}
   namespace: {{ .Values.namespace }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: canary-{{.Values.deployment.name }}
+    name: green-{{.Values.deployment.name }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   targetCPUUtilizationPercentage: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
@@ -136,7 +136,7 @@ spec:
 
 ---
 # Ingress
-{{- if .Values.deployment.canary }}
+{{- if .Values.deployment.blueGreen }}
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := .Values.deployment.name }}
 {{- $svcPort := .Values.service.protocol.http -}}
@@ -151,7 +151,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: canary-{{ $fullName }}
+  name: green-{{ $fullName }}
   namespace: {{ .Values.namespace | quote }}
   labels:
     {{- include "payaza.labels" . | nindent 4 }}
@@ -175,7 +175,7 @@ spec:
   {{- end }}
   rules:
     {{- range .Values.ingress.hosts }}
-    - host: canary-{{ .host }}
+    - host: green-{{ .host }}
       http:
         paths:
           {{- range .paths }}
@@ -186,11 +186,11 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
-                name: canary-{{ $fullName }}
+                name: green-{{ $fullName }}
                 port:
                   number: {{ $svcPort }}
               {{- else }}
-              serviceName: canary-{{ $fullName }}
+              serviceName: green-{{ $fullName }}
               servicePort: {{ $svcPort }}
               {{- end }}
           {{- end }}

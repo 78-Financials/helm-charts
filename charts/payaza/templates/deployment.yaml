@@ -1,3 +1,5 @@
+{{- if not .Values.deployment.blueGreen }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -80,3 +82,4 @@ spec:
       {{- end }}
       imagePullSecrets:
         - name: regcred
+{{- end -}}
