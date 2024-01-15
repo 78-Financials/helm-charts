@@ -1,4 +1,3 @@
-{{- if not .Values.deployment.blueGreen }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -24,5 +23,3 @@ spec:
       targetPort: {{ .Values.deployment.port }}
     {{- end}}
   type: {{ .Values.service.type }}
-
-{{- end}}

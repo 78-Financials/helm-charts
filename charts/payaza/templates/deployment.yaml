@@ -1,5 +1,3 @@
-{{- if not .Values.deployment.blueGreen }}
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,11 +14,19 @@ spec:
         rollme: {{ randAlphaNum 5 | quote }}
       labels:
         app: {{ .Values.deployment.name | quote }}
-        version: {{ .Values.deployment.tag | quote }}
+        {{- if .Values.deployment.blueGreen }}
+        version: {{ .Values.deployment.blue }}            
+        {{- else }}
+        version: {{ .Values.deployment.tag }}
+        {{- end }}
     spec:
       containers:
         - name: {{ .Values.deployment.name | quote }}
+          {{- if .Values.deployment.blueGreen }}
+          image: {{ .Values.deployment.image }}:{{ .Values.deployment.blue }}            
+          {{- else }}
           image: {{ .Values.deployment.image }}:{{ .Values.deployment.tag }}
+          {{- end }}
           imagePullPolicy: {{ .Values.deployment.pullPolicy }}
           ports:
           - containerPort: {{ .Values.deployment.port }}
@@ -82,4 +88,3 @@ spec:
       {{- end }}
       imagePullSecrets:
         - name: regcred
-{{- end -}}

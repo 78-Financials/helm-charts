@@ -86,7 +86,7 @@ spec:
 
 ---
 # Service
-{{- if .Values.deployment.green }}
+{{- if .Values.deployment.blueGreen }}
 apiVersion: v1
 kind: Service
 metadata:
