@@ -105,6 +105,16 @@ entries:
   payaza:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2024-01-15T09:50:11.397227044Z"
+    description: fixed the issue were enabling blue-green deletes the current application
+    digest: 59791137c4211e4cd723991fc274021f6a7b1fdb1b18bc75a392765a9ef92862
+    name: payaza
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.3.1/payaza-0.3.1.tgz
+    version: 0.3.1
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2024-01-14T07:18:52.997283115Z"
     description: added blue-green deployment feature
     digest: d5a7f4e30fe610fe65e1f0274ad3ffa518b142765de855851bda558bbc890538
@@ -264,4 +274,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-01-14T07:18:52.997342065Z"
+generated: "2024-01-15T09:50:11.397310309Z"
