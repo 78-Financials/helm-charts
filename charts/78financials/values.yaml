@@ -22,6 +22,14 @@ resources:
   limits:
     memory: "100Mi"
 
+probes:
+  enableProbes: false
+  livenessProbePath: /api/health
+  livenessProbePort: 8000
+  readinessProbePath: /api/health
+  readinessProbePort: 8000
+
+
 # Environment
 environment: {}
   # uncomment name below to set environment variables to `Staging` or `Production`. Development does not have a label
