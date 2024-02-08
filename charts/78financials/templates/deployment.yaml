@@ -32,14 +32,14 @@ spec:
             httpGet:
               path: {{ .Values.probes.livenessProbePath }}
               port: {{ .Values.probes.livenessProbePort }}
-            initialDelaySeconds: 15
-            periodSeconds: 20
+            initialDelaySeconds: 20
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: {{ .Values.probes.readinessProbePath }}
               port: {{ .Values.probes.readinessProbePort }}
-            initialDelaySeconds: 10
-            periodSeconds: 15
+            initialDelaySeconds: 20
+            periodSeconds: 10
           {{- else }}
           # Probes disabled
           {{- end }}
