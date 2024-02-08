@@ -25,9 +25,7 @@ resources:
 probes:
   enableProbes: false
   livenessProbePath: /api/health
-  livenessProbePort: 8000
   readinessProbePath: /api/health
-  readinessProbePort: 8000
 
 
 # Environment
