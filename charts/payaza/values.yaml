@@ -12,6 +12,7 @@ deployment:
   replicas: 1
   port: 80
   name: "nginx"
+  
 
 # Namespace
 namespace: "default"
@@ -24,6 +25,11 @@ resources:
   limits:
     memory: "100Mi"
 
+probes:
+  enableProbes: false
+  livenessProbePath: /api/health
+  readinessProbePath: /api/health
+  
 # Environment
 environment: {}
   # uncomment name below to set environment variables to `Sandbox` or `Production`.
