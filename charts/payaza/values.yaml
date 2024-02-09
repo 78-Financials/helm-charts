@@ -12,6 +12,7 @@ deployment:
   replicas: 1
   port: 80
   name: "nginx"
+  
 
 # Namespace
 namespace: "default"
@@ -23,7 +24,16 @@ resources:
     memory: "50Mi"
   limits:
     memory: "100Mi"
+    cpu: "0.5"
 
+probes:
+  liveness:
+    enable: false
+    path: /
+  readiness:
+    enable: false
+    path: /
+  
 # Environment
 environment: {}
   # uncomment name below to set environment variables to `Sandbox` or `Production`.

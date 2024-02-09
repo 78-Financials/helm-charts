@@ -35,6 +35,28 @@ spec:
           - name: {{ .Values.deployment.name | quote }}
             mountPath: {{ .Values.volume.path }}
           {{- end }}
+          {{- if .Values.probes.readiness.enable }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          {{- end }}
+          {{- if .Values.probes.liveness.enable }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          {{- end }}
           {{- if .Values.env }}
           envFrom:
             {{- if .Values.env.secret.create }}

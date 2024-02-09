@@ -22,6 +22,15 @@ resources:
   limits:
     memory: "100Mi"
 
+probes:
+  liveness:
+    enable: false
+    path: /
+  readiness:
+    enable: false
+    path: /
+
+
 # Environment
 environment: {}
   # uncomment name below to set environment variables to `Staging` or `Production`. Development does not have a label
