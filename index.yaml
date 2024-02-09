@@ -3,6 +3,16 @@ entries:
   78financials:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2024-02-09T08:16:16.275938538Z"
+    description: Added Readiness and Liveness probes
+    digest: b186446f4140edc71a8d8dd7b42e6244490a5839225be08141f67f7962252125
+    name: 78financials
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/78financials-1.0.4/78financials-1.0.4.tgz
+    version: 1.0.4
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-04-25T10:19:58.821712253Z"
     description: A Helm chart for Kubernetes
     digest: abec053b0d8dbbc0374874f7d023f7387fafa3674f63163b8b044a0a050e6d9e
@@ -103,6 +113,16 @@ entries:
     - https://github.com/78-Financials/helm-charts/releases/download/ingress-0.1.0/ingress-0.1.0.tgz
     version: 0.1.0
   payaza:
+  - apiVersion: v2
+    appVersion: 1.1.0
+    created: "2024-02-09T08:16:16.407151408Z"
+    description: Added Readiness and Liveness probes
+    digest: 8c3c15fd77483dbaa7600cd392366ef150f118b48b6917e72f3f87029e56f938
+    name: payaza
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.3.2/payaza-0.3.2.tgz
+    version: 0.3.2
   - apiVersion: v2
     appVersion: 1.1.0
     created: "2024-01-15T09:50:11.397227044Z"
@@ -274,4 +294,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-01-15T09:50:11.397310309Z"
+generated: "2024-02-09T08:16:16.407257105Z"
