@@ -24,11 +24,15 @@ resources:
     memory: "50Mi"
   limits:
     memory: "100Mi"
+    cpu: "0.5"
 
 probes:
-  enableProbes: false
-  livenessProbePath: /api/health
-  readinessProbePath: /api/health
+  liveness:
+    enable: false
+    path: /
+  readiness:
+    enable: false
+    path: /
   
 # Environment
 environment: {}

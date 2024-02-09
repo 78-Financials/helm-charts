@@ -1,6 +1,6 @@
 apiVersion: v2
 name: 78financials
-description: A Helm chart for Kubernetes
+description: Added Readiness and Liveness probes
 
 # A chart can be either an 'application' or a 'library' chart.
 #
