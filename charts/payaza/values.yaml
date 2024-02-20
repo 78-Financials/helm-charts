@@ -30,9 +30,19 @@ probes:
   liveness:
     enable: false
     path: /
+    initialDelaySeconds: 60
+    periodSeconds: 5
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 5
   readiness:
     enable: false
     path: /
+    initialDelaySeconds: 20
+    periodSeconds: 2
+    timeoutSeconds: 2
+    successThreshold: 1
+    failureThreshold: 3
   
 # Environment
 environment: {}
