@@ -96,7 +96,7 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
 
 ingress:
-  enabled: true
+  enabled: false
   useHttp2: false
   className: "nginx"
   annotations:
