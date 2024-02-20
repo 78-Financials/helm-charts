@@ -125,6 +125,16 @@ entries:
   payaza:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2024-02-20T21:33:06.481715005Z"
+    description: disabled ingress by default
+    digest: cd52f122895b0a39d2f29149c2fc9ab8f641fb49ca8f34959dcdf9c8ed98b103
+    name: payaza
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.3.5/payaza-0.3.5.tgz
+    version: 0.3.5
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2024-02-20T19:42:31.857416818Z"
     description: disabling the probes
     digest: 561d1bbb06308247d5c755ecaba73cc92b48f711f1cb59083b1895134a6fffb7
@@ -324,4 +334,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-02-20T19:42:31.857512627Z"
+generated: "2024-02-20T21:33:06.481836353Z"
