@@ -28,7 +28,7 @@ resources:
 
 probes:
   liveness:
-    enable: false
+    enable: true
     path: /
     initialDelaySeconds: 60
     periodSeconds: 5
@@ -36,7 +36,7 @@ probes:
     successThreshold: 1
     failureThreshold: 5
   readiness:
-    enable: false
+    enable: true
     path: /
     initialDelaySeconds: 20
     periodSeconds: 2
