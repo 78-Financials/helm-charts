@@ -125,6 +125,16 @@ entries:
   payaza:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2024-02-20T19:42:31.857416818Z"
+    description: disabling the probes
+    digest: 561d1bbb06308247d5c755ecaba73cc92b48f711f1cb59083b1895134a6fffb7
+    name: payaza
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.3.4/payaza-0.3.4.tgz
+    version: 0.3.4
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2024-02-20T14:07:53.37041537Z"
     description: Adding more config to the probes
     digest: 74b425e4f2d894aa756515e578349d3fb3c78ac9d32257a302e83eb40a625dc2
@@ -314,4 +324,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-02-20T14:07:53.37052292Z"
+generated: "2024-02-20T19:42:31.857512627Z"
