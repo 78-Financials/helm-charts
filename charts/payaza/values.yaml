@@ -110,9 +110,7 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
-  tls:
-    hosts:
-      - nginx.payaza.app
+  tls: []
 
 # persistent volume
 pv:
