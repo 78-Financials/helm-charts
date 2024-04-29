@@ -125,6 +125,16 @@ entries:
   payaza:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2024-04-29T12:41:41.613305845Z"
+    description: rolling back the changes on hpa
+    digest: 022b51416043dda4e5b37566145b1160b7842ffd6c1cf3e65ef7697ede897c6a
+    name: payaza
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.3.7/payaza-0.3.7.tgz
+    version: 0.3.7
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2024-04-29T06:14:40.528645834Z"
     description: optimized hpa. added cpu and memory utilization
     digest: 2a4f161b0ceaae64f3205b6762c16650b1b81d5749dc0e061b8837ea425e7f22
@@ -253,6 +263,17 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.1.0/payaza-0.1.0.tgz
     version: 0.1.0
+  payaza-v2:
+  - apiVersion: v2
+    appVersion: 1.1.0
+    created: "2024-04-29T12:41:41.789305029Z"
+    description: This is the first version of the chart
+    digest: da8042138ba7e7696443218e9afb9080fa7b0470e367ea18b309a3cb61889bbf
+    name: payaza-v2
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-v2-0.0.1/payaza-v2-0.0.1.tgz
+    version: 0.0.1
   rove10:
   - apiVersion: v2
     appVersion: 1.16.0
@@ -344,4 +365,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-29T06:14:40.528788913Z"
+generated: "2024-04-29T12:41:41.789456264Z"
