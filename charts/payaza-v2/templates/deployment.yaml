@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.name | quote }}
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.name | quote }}
+  template:
+    metadata:
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+      labels:
+        app: {{ .Values.deployment.name | quote }}
+        {{- if .Values.deployment.blueGreen }}
+        version: {{ .Values.deployment.blue }}            
+        {{- else }}
+        version: {{ .Values.deployment.tag }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ .Values.deployment.name | quote }}
+          {{- if .Values.deployment.blueGreen }}
+          image: {{ .Values.deployment.image }}:{{ .Values.deployment.blue }}            
+          {{- else }}
+          image: {{ .Values.deployment.image }}:{{ .Values.deployment.tag }}
+          {{- end }}
+          imagePullPolicy: {{ .Values.deployment.pullPolicy }}
+          ports:
+          - containerPort: {{ .Values.deployment.port }}
+          {{- if .Values.volume.bind }}
+          volumeMounts:
+          - name: {{ .Values.deployment.name | quote }}
+            mountPath: {{ .Values.volume.path }}
+          {{- end }}
+          {{- if .Values.probes.readiness.enable }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+            successThreshold: {{ .Values.probes.readiness.successThreshold }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.probes.liveness.enable }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+            successThreshold: {{ .Values.probes.liveness.successThreshold }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.env }}
+          envFrom:
+            {{- if .Values.env.secret.create }}
+            - secretRef:
+                name: {{ .Values.deployment.name | quote }}
+            {{- end}}
+
+            {{- if .Values.additionalSecrets }}
+            # additional secrets
+            {{- toYaml .Values.additionalSecrets | nindent 12 }}
+            {{- end}}
+
+            {{- if .Values.env.configmap.create }}
+            - configMapRef:
+                name: {{ .Values.deployment.name | quote }}
+            {{- end}}
+
+            {{- if .Values.additionalConfigs }}
+            # additional configs
+            {{- toYaml .Values.additionalConfigs | nindent 12 }}
+            {{- end}}
+          {{- end }}
+          {{- if .Values.resources }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- else }}
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "50Mi"
+            limits:
+              cpu: "1024m"
+              memory: "1Gi"
+          {{- end }}
+      {{- if .Values.pvc.create }}
+      volumes:
+      - name: {{ .Values.deployment.name | quote }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvc.name }}
+      {{- end}}
+      {{- if .Values.environment }}
+      nodeSelector:
+        environment: {{ .Values.environment.name | quote }}
+      {{- end }}
+      {{- if .Values.tolerations.enabled }}
+      tolerations:
+      - key: "environment"
+        operator: "Equal"
+        value: {{ .Values.environment.name | quote }}
+        effect: "NoSchedule"
+      {{- end }}
+      imagePullSecrets:
+        - name: regcred

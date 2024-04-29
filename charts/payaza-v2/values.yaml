@@ -1,0 +1,134 @@
+# Default values for payaza.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Deployment
+deployment:
+  blueGreen: false
+  image: "nginx"
+  tag: "latest"
+  blue: "old" # If `blueGreen = true`, then `blue` must be the tag of the current running application before the new build
+  pullPolicy: IfNotPresent
+  replicas: 1
+  port: 80
+  name: "nginx"
+
+# Namespace
+namespace: "default"
+
+# Resources
+resources:
+  requests:
+    cpu: "50m"
+    memory: "50Mi"
+  limits:
+    memory: "100Mi"
+    cpu: "0.5"
+
+probes:
+  liveness:
+    enable: false
+    path: /
+    initialDelaySeconds: 60
+    periodSeconds: 5
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 5
+  readiness:
+    enable: false
+    path: /
+    initialDelaySeconds: 20
+    periodSeconds: 2
+    timeoutSeconds: 2
+    successThreshold: 1
+    failureThreshold: 3
+
+# Environment
+environment:
+  {}
+  # uncomment name below to set environment variables to `Sandbox` or `Production`.
+  # Must be set to `Production` for production deployments and `Sandbox` for staging and development deployments.
+  # name: "Sandbox | Production"
+
+# Tolerations
+tolerations:
+  enabled: false # defaults to `false`. Must be `true` for Production
+
+# Service
+service:
+  type: NodePort # NodePort, LoadBalancer, ClusterIP
+  protocol:
+    name: TCP
+    http: 80
+    https: 443
+  annotations:
+    enabled: false # Set as `true` for apis that uses http/2
+
+# Environment Variables sources
+env:
+  secret:
+    # set to `true` to create a secret with the environment variables. Secret name is same with the deployment name.
+    # data should contain key value pairs in the format of "key":"value".
+    create: false
+    data: {}
+
+  configmap:
+    # set to `true` to create a configmap with the environment variables. Configmap name is same with the deployment name.
+    # data should contain key value pairs in the format of "key":"value".
+    create: false
+    data: {}
+
+additionalSecrets:
+  []
+  # - secretRef:
+  #     name: existing-secret-name
+
+additionalConfigs:
+  []
+  # - configMapRef:
+  #     name:  existing-configMap-name
+
+# autoscaling
+# This is used for scaling pods horizontally.
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 70
+
+ingress:
+  enabled: false
+  useHttp2: false
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - host: nginx.payaza.app
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+# persistent volume
+pv:
+  # uncomment below to set persistent volume
+  create: false # true: create pv | false: do not create pvc
+  name: "78financials-pv"
+  size: 8Gi
+  path: "/var/lib/78financials"
+  storageClass: "standard"
+
+# volume
+volume:
+  bind: false # set to `true` to bind a volume. Note that `pvc.create` must be set to true for the data to be persistent.
+  path: "/mnt/data" # Set to the correct path your application needs.
+
+# persistent volume claim
+pvc:
+  create: false # true: create pvc | false: do not create pvc. Note that `volume.bind` must be true for this to be bond to a pod.
+  name: "78financials-pvc"
+  size: 8Gi
+  storageClass: "standard"
