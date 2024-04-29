@@ -125,6 +125,16 @@ entries:
   payaza:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2024-04-29T06:14:40.528645834Z"
+    description: optimized hpa. added cpu and memory utilization
+    digest: 2a4f161b0ceaae64f3205b6762c16650b1b81d5749dc0e061b8837ea425e7f22
+    name: payaza
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.3.6/payaza-0.3.6.tgz
+    version: 0.3.6
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2024-02-20T21:33:06.481715005Z"
     description: disabled ingress by default
     digest: cd52f122895b0a39d2f29149c2fc9ab8f641fb49ca8f34959dcdf9c8ed98b103
@@ -334,4 +344,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-02-20T21:33:06.481836353Z"
+generated: "2024-04-29T06:14:40.528788913Z"
