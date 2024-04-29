@@ -88,8 +88,8 @@ spec:
               cpu: "10m"
               memory: "50Mi"
             limits:
-              cpu: "50m"
-              memory: "100Mi"
+              cpu: "1024m"
+              memory: "1Gi"
           {{- end }}
       {{- if .Values.pvc.create }}
       volumes:
