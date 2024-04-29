@@ -125,6 +125,16 @@ entries:
   payaza:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2024-04-29T14:16:22.63515583Z"
+    description: Fixing error
+    digest: c48a13b29093a041ed9122af29d85ee9a7f1dacb422505586af2e3dacaf9583c
+    name: payaza
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.3.8/payaza-0.3.8.tgz
+    version: 0.3.8
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2024-04-29T12:41:41.613305845Z"
     description: rolling back the changes on hpa
     digest: 022b51416043dda4e5b37566145b1160b7842ffd6c1cf3e65ef7697ede897c6a
@@ -266,6 +276,16 @@ entries:
   payaza-v2:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2024-04-29T14:16:22.733853687Z"
+    description: Making chart available on release
+    digest: cb179a61995b763c87dc97b2f0723b2d35fd169c859f16b210020bb882911a13
+    name: payaza-v2
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-v2-0.0.2/payaza-v2-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2024-04-29T12:41:41.789305029Z"
     description: This is the first version of the chart
     digest: da8042138ba7e7696443218e9afb9080fa7b0470e367ea18b309a3cb61889bbf
@@ -365,4 +385,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-29T12:41:41.789456264Z"
+generated: "2024-04-29T14:16:22.733965236Z"
