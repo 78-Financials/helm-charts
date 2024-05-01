@@ -276,6 +276,16 @@ entries:
   payaza-v2:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2024-05-01T14:27:41.383920979Z"
+    description: Removed redeployment for any change
+    digest: 06a1d8e956ac0b39de2c41b84aa29f7bdd64529c290a3a346278dfef07eec491
+    name: payaza-v2
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-v2-0.0.3/payaza-v2-0.0.3.tgz
+    version: 0.0.3
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2024-04-29T14:16:22.733853687Z"
     description: Making chart available on release
     digest: cb179a61995b763c87dc97b2f0723b2d35fd169c859f16b210020bb882911a13
@@ -385,4 +395,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-29T14:16:22.733965236Z"
+generated: "2024-05-01T14:27:41.384040805Z"
