@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.deployment.name | quote }}
   namespace: {{ .Values.namespace | quote }}
 spec:
-  replicas: {{ .Values.deployment.replicas }}
+  # replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
       app: {{ .Values.deployment.name | quote }}
