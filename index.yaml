@@ -276,6 +276,16 @@ entries:
   payaza-v2:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2024-05-29T15:24:23.461464786Z"
+    description: making external secret false
+    digest: 31563ec44b480115dc414dcec19bd610a2d6e88b6d24b54d1583753ef7c9ac18
+    name: payaza-v2
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-v2-0.0.6/payaza-v2-0.0.6.tgz
+    version: 0.0.6
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2024-05-29T15:19:31.624996997Z"
     description: Adding external secrets feature
     digest: 2fbf1ae9558e713800034191482422ac3015ac444cf049f5d879b6a84fc3484d
@@ -415,4 +425,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-05-29T15:19:31.625268945Z"
+generated: "2024-05-29T15:24:23.461570714Z"
