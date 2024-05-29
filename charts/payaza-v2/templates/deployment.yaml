@@ -64,7 +64,7 @@ spec:
                 name: {{ .Values.deployment.name | quote }}
             {{- end}}
 
-            {{- if .Values.env.create_external_secret }}
+            {{- if .Values.env.external_secret.create }}
             - secretRef:
                 name: {{ .Values.env.external_secret.secretName }}
             {{- end}}
