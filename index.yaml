@@ -276,6 +276,16 @@ entries:
   payaza-v2:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2024-05-29T15:28:20.844829822Z"
+    description: removing redundant code
+    digest: 4354dc94d34a9bac767b042ba2c5133cccae681ccbd926a08be83fdbcef511cb
+    name: payaza-v2
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-v2-0.0.7/payaza-v2-0.0.7.tgz
+    version: 0.0.7
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2024-05-29T15:24:23.461464786Z"
     description: making external secret false
     digest: 31563ec44b480115dc414dcec19bd610a2d6e88b6d24b54d1583753ef7c9ac18
@@ -425,4 +435,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-05-29T15:24:23.461570714Z"
+generated: "2024-05-29T15:28:20.844984031Z"
