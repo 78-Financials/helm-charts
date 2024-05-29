@@ -14,7 +14,7 @@ deployment:
   name: "nginx"
 
 # Namespace
-namespace: "default"
+namespace: "development"
 
 # Resources
 resources:
