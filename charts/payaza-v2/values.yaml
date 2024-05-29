@@ -80,11 +80,11 @@ env:
 
   env:
   external_secret:
-    create: true  # Set to true to create the ExternalSecret resource
+    create: false  # Set to true to create the ExternalSecret resource
     refreshInterval: 10m  # Interval at which to refresh the secret (e.g., 10m)
     secretStoreName: aws-secretsmanager  # Name of the secret store (Default aws-secretsmanager)
     secretName: my-secret  # Name of the target secret to create
-    secretManagerRef: my-secret-manager  # Name of the secret on secret manager (payaza-prod)
+    secretManagerRef: payaza-prod  # Name of the secret on secret manager (payaza-prod)
 
 
 
