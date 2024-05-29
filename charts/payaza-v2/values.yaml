@@ -77,8 +77,7 @@ env:
     # data should contain key value pairs in the format of "key":"value".
     create: false
     data: {}
-
-  env:
+    
   external_secret:
     create: false  # Set to true to create the ExternalSecret resource
     refreshInterval: 10m  # Interval at which to refresh the secret (e.g., 10m)
