@@ -52,7 +52,7 @@ environment:
 
 # Add label `serverless:true` to deploy to fargate
 labels:
-  serverless: false
+  serverless: "fargate"
 
 # Tolerations
 tolerations:
