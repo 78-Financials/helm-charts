@@ -50,6 +50,10 @@ environment:
   # Must be set to `Production` for production deployments and `Sandbox` for staging and development deployments.
   # name: "Sandbox | Production"
 
+# Add label `serverless:true` to deploy to fargate
+labels:
+  serverless: false
+
 # Tolerations
 tolerations:
   enabled: false # defaults to `false`. Must be `true` for Production
@@ -77,15 +81,13 @@ env:
     # data should contain key value pairs in the format of "key":"value".
     create: false
     data: {}
-    
+
   external_secret:
     create: false  # Set to true to create the ExternalSecret resource
     refreshInterval: 10m  # Interval at which to refresh the secret (e.g., 10m)
     secretStoreName: aws-secretsmanager  # Name of the secret store (Default aws-secretsmanager)
     secretName: my-secret  # Name of the target secret to create
     secretManagerRef: payaza-prod  # Name of the secret on secret manager (payaza-prod)
-
-
 
 additionalSecrets:
   []
@@ -101,7 +103,7 @@ additionalConfigs:
 # This is used for scaling pods horizontally.
 
 autoscaling:
-  enabled: true
+  enabled: false
   minReplicas: 1
   maxReplicas: 2
   targetCPUUtilizationPercentage: 70

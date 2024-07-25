@@ -14,6 +14,7 @@ spec:
       #   rollme: {{ randAlphaNum 5 | quote }}
       labels:
         app: {{ .Values.deployment.name | quote }}
+        serverless: {{ .Values.labels.serverless }}
         {{- if .Values.deployment.blueGreen }}
         version: {{ .Values.deployment.blue }}            
         {{- else }}
