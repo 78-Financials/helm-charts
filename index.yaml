@@ -276,6 +276,16 @@ entries:
   payaza-v2:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2024-07-25T16:32:51.164955895Z"
+    description: added fargate label
+    digest: 8b4cd1f04fc97ab3cc8597a5f51dbeb83ebc8583120bd3f2ffa62ba25efa9269
+    name: payaza-v2
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-v2-0.1.0/payaza-v2-0.1.0.tgz
+    version: 0.1.0
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2024-07-25T16:14:50.839409399Z"
     description: using correct env variable
     digest: 1e121bda252d0329a133bb1143b59e1cc70c53dafac408751ba5e4c5684db092
@@ -455,4 +465,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-07-25T16:14:50.839537657Z"
+generated: "2024-07-25T16:32:51.165103531Z"
