@@ -82,6 +82,16 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/external-secrets-0.1.0/external-secrets-0.1.0.tgz
     version: 0.1.0
+  - apiVersion: v2
+    appVersion: 1.1.0
+    created: "2024-11-18T06:56:53.176516713Z"
+    description: creating the first version for external secrets
+    digest: 3abac7739c2ae07a9a2c418433e7aad9376aaaab9df8ec87cbe37516151abc84
+    name: external-secrets
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/external-secrets-0.0.1/external-secrets-0.0.1.tgz
+    version: 0.0.1
   ingress:
   - apiVersion: v2
     appVersion: 1.0.0
@@ -476,4 +486,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2024-11-18T06:51:19.937489838Z"
+generated: "2024-11-18T06:56:53.176627281Z"
