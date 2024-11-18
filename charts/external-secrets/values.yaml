@@ -1,0 +1,17 @@
+# Name of the ExternalSecret resource
+name: "apm-secrets"
+
+# Kubernetes namespace where the ExternalSecret will be created
+namespace: "development"
+
+# How often the ExternalSecret should sync with the external secret manager
+refreshInterval: "0s"
+
+# Name of the SecretStore resource to be referenced
+secretStoreName: "my-secret-store"
+
+# Name of the Kubernetes Secret where the data will be stored
+secretName: "my-secret"
+
+# Path or identifier of the secret in the external secret manager
+secretManagerRef: "my-secret-path"
