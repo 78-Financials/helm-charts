@@ -18,7 +18,7 @@ spec:
         {{- if .Values.deployment.blueGreen }}
         version: {{ .Values.deployment.blue }}            
         {{- else }}
-        version: {{ .Values.deployment.tag }}
+        version: {{ .Values.deployment.tag | quote}}
         {{- end }}
     spec:
       containers:
