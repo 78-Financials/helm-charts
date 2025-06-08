@@ -16,11 +16,14 @@ spec:
         app: {{ .Values.deployment.name | quote }}
         serverless: {{ .Values.labels.serverless | quote }}
         {{- if .Values.deployment.blueGreen }}
-        version: {{ .Values.deployment.blue }}            
+        version: {{ .Values.deployment.blue }}
         {{- else }}
         version: {{ .Values.deployment.tag | quote}}
         {{- end }}
     spec:
+      {{- if .Values.serviceAccount.enable }}
+      serviceAccountName: {{ .Values.serviceAccount.name | quote }}
+      {{- end }}
       containers:
         - name: {{ .Values.deployment.name | quote }}
           {{- if .Values.deployment.blueGreen }}

@@ -68,6 +68,11 @@ service:
   annotations:
     enabled: false # Set as `true` for apis that uses http/2
 
+# service account
+serviceAccount:
+  enable: false # Set to `true` to create a service account
+  name: "" # Name of the service account. If not set, it will be auto-generated.
+
 # Environment Variables sources
 env:
   secret:

@@ -44,5 +44,9 @@ helm template payaza charts/payaza/ --values charts/payaza/values.yaml
 ```
 
 ```bash
+helm template payaza charts/payaza-v2/ --values charts/payaza-v2/values.yaml
+```
+
+```bash
 helm upgrade --install nginx charts/payaza/ --values charts/payaza/values.yaml
 ```
