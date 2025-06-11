@@ -297,6 +297,16 @@ entries:
   payaza-v2:
   - apiVersion: v2
     appVersion: 1.1.0
+    created: "2025-06-11T08:39:00.417171411Z"
+    description: Updated default resource configuration.
+    digest: c07ab11aaadc805a61eb1163cd47affa6a70efd56e38449440a49d86122ada08
+    name: payaza-v2
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-v2-1.0.1/payaza-v2-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 1.1.0
     created: "2025-06-08T10:44:30.189657323Z"
     description: Introduced service account support for deployments access to AWS
       resources.
@@ -507,4 +517,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2025-06-08T10:44:30.189780841Z"
+generated: "2025-06-11T08:39:00.41735698Z"
