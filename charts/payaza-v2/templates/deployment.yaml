@@ -93,12 +93,12 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- else }}
           resources:
-            requests:
-              cpu: "10m"
-              memory: "50Mi"
+            # requests:
+            #   cpu: "10m"
+            #   memory: "50Mi"
             limits:
-              cpu: "1024m"
-              memory: "1Gi"
+              cpu: "2"
+              memory: "2Gi"
           {{- end }}
       {{- if .Values.pvc.create }}
       volumes:
