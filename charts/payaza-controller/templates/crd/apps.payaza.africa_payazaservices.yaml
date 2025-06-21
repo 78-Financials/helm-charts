@@ -20,23 +20,7 @@ spec:
     singular: payazaservice
   scope: Namespaced
   versions:
-  - additionalPrinterColumns:
-    - description: Docker image
-      jsonPath: .spec.image
-      name: Image
-      type: string
-    - description: Desired number of replicas
-      jsonPath: .spec.replicas
-      name: Replicas
-      type: integer
-    - description: Number of ready replicas
-      jsonPath: .status.readyReplicas
-      name: Ready
-      type: integer
-    - jsonPath: .metadata.creationTimestamp
-      name: Age
-      type: date
-    name: v1
+  - name: v1
     schema:
       openAPIV3Schema:
         description: PayazaService is the Schema for the payazaservices API
@@ -64,82 +48,76 @@ spec:
               additionalLabels:
                 additionalProperties:
                   type: string
-                description: AdditionalLabels are labels to add to all created resources
-                  (Deployment, Service, etc.).
+                description: AdditionalLabels specifies extra labels to add to all
+                  managed resources (Deployment, Service, etc.).
                 type: object
-              additionalSecrets:
+              additionalSecret:
                 description: |-
-                  AdditionalSecrets are names of existing Kubernetes Secrets in the cluster that the microservice needs access to.
-                  These secrets are not mounted as volumes or environment variables by default through this field,
-                  but can be referenced by the controller logic for other purposes (e.g., imagePullSecrets, or specific init container logic).
+                  AdditionalSecretsRef specifies a list of *existing* secret names
+                  to be used as ImagePullSecrets for the Deployment.
+                  Example: - name: my-docker-registry-secret
                 items:
-                  type: string
+                  description: |-
+                    SecretReference points to an existing Secret by its Name.
+                    Used for AdditionalSecretsRef (e.g., ImagePullSecrets).
+                  properties:
+                    name:
+                      type: string
+                  required:
+                  - name
+                  type: object
                 type: array
               autoscaling:
-                description: Autoscaling defines the Horizontal Pod Autoscaler configuration.
+                description: Autoscaling defines the desired HorizontalPodAutoscaler
+                  configuration.
                 properties:
                   maxReplicas:
-                    description: MaxReplicas is the upper limit for the number of
-                      replicas that can be set by the HPA.
                     format: int32
                     type: integer
                   minReplicas:
-                    description: MinReplicas is the lower limit for the number of
-                      replicas that can be set by the HPA.
                     format: int32
                     type: integer
                   targetCPUUtilizationPercentage:
-                    description: TargetCPUUtilizationPercentage is the target CPU
-                      utilization percentage for the HPA.
                     format: int32
                     type: integer
                   targetMemoryUtilizationPercentage:
-                    description: TargetMemoryUtilizationPercentage is the target Memory
-                      utilization percentage for the HPA.
                     format: int32
                     type: integer
                 required:
                 - maxReplicas
                 - minReplicas
                 type: object
-              configMaps:
-                description: ConfigMaps are references to Kubernetes ConfigMaps whose
-                  keys should be mounted as environment variables.
-                items:
-                  description: ConfigMapEnvSource selects a key of a ConfigMap to
-                    be used as an environment variable.
-                  properties:
-                    key:
-                      type: string
-                    name:
-                      type: string
-                  required:
-                  - key
-                  - name
-                  type: object
-                type: array
+              configs:
+                additionalProperties:
+                  type: string
+                description: |-
+                  Configs specifies key-value pairs for a ConfigMap that will be *created*
+                  by the operator and its data exposed as environment variables.
+                  Each key in this map becomes an environment variable name.
+                type: object
               containerPort:
-                description: ContainerPort is the port that the application inside
-                  the container listens on.
+                description: ContainerPort is the port the container listens on.
                 format: int32
                 type: integer
               env:
-                description: Env is a list of environment variables to set in the
-                  container.
+                description: |-
+                  Env defines custom environment variables for the container,
+                  allowing inline values or references to *existing* secrets/configmaps.
                 items:
-                  description: EnvVar represents an environment variable.
+                  description: EnvVar defines an environment variable
                   properties:
                     name:
                       type: string
                     value:
                       type: string
                     valueFrom:
-                      description: ValueFrom determines the value of the environment
-                        variable from a source.
+                      description: EnvVarSource represents a source for the value
+                        of an EnvVar.
                       properties:
                         configMapKeyRef:
-                          description: ConfigMapEnvSource selects a key of a ConfigMap
-                            to be used as an environment variable.
+                          description: |-
+                            ConfigMapKeySelector selects a key of an *existing* ConfigMap.
+                            Used for referencing configmaps in EnvVarSource.
                           properties:
                             key:
                               type: string
@@ -150,8 +128,9 @@ spec:
                           - name
                           type: object
                         secretKeyRef:
-                          description: SecretEnvSource selects a key of a Secret to
-                            be used as an environment variable.
+                          description: |-
+                            SecretKeySelector selects a key of an *existing* Secret.
+                            Used for referencing secrets in EnvVarSource.
                           properties:
                             key:
                               type: string
@@ -167,83 +146,64 @@ spec:
                   type: object
                 type: array
               image:
-                description: Image is the Docker image to deploy (e.g., "my-app:latest").
+                description: Image is the container image to deploy.
                 type: string
               ingress:
-                description: Ingress defines the ingress rules for accessing the service
-                  from outside the cluster.
+                description: Ingress defines the desired Ingress configuration.
                 properties:
                   annotations:
                     additionalProperties:
                       type: string
-                    description: Annotations are additional annotations to add to
-                      the Ingress.
                     type: object
+                  enabled:
+                    type: boolean
                   host:
-                    description: Host is the hostname to use for the Ingress.
                     type: string
                   path:
-                    default: /
-                    description: Path is the URL path for the Ingress. Defaults to
-                      "/".
+                    type: string
+                  pathType:
                     type: string
                   tls:
-                    description: TLS indicates whether TLS should be enabled for this
-                      Ingress.
                     type: boolean
                   tlsSecretName:
-                    description: TLSSecretName is the name of the Kubernetes Secret
-                      containing the TLS certificate.
                     type: string
                 required:
                 - host
                 type: object
               replicas:
-                description: Replicas is the number of desired pods.
+                description: Replicas is the desired number of pods.
                 format: int32
                 type: integer
               resources:
-                description: Resources defines the compute resources (CPU and memory)
-                  required by this container.
+                description: Resources defines the compute resources required by the
+                  container.
                 properties:
                   limits:
                     additionalProperties:
                       type: string
-                    description: Limits describes the maximum amount of compute resources
-                      allowed.
                     type: object
                   requests:
                     additionalProperties:
                       type: string
-                    description: Requests describes the minimum amount of compute
-                      resources required.
                     type: object
                 type: object
               secrets:
-                description: Secrets are references to Kubernetes Secrets whose keys
-                  should be mounted as environment variables.
-                items:
-                  description: SecretEnvSource selects a key of a Secret to be used
-                    as an environment variable.
-                  properties:
-                    key:
-                      type: string
-                    name:
-                      type: string
-                  required:
-                  - key
-                  - name
-                  type: object
-                type: array
+                additionalProperties:
+                  type: string
+                description: |-
+                  Secrets specifies key-value pairs for a Secret that will be *created*
+                  by the operator and its data exposed as environment variables.
+                  Each key in this map becomes an environment variable name.
+                type: object
               serviceAccountName:
-                description: ServiceAccountName is the name of the ServiceAccount
-                  to use for the pod.
+                description: |-
+                  ServiceAccountName specifies the name of the ServiceAccount to use.
+                  If empty, a default ServiceAccount is used, but not explicitly created by the operator.
                 type: string
               serviceType:
                 default: ClusterIP
-                description: |-
-                  ServiceType defines the type of Kubernetes Service to create (e.g., ClusterIP, NodePort, LoadBalancer).
-                  Defaults to ClusterIP if not specified.
+                description: ServiceType is the Kubernetes Service type (e.g., ClusterIP,
+                  NodePort, LoadBalancer).
                 type: string
             required:
             - containerPort
@@ -253,91 +213,25 @@ spec:
           status:
             description: PayazaServiceStatus defines the observed state of PayazaService
             properties:
-              conditions:
-                description: |-
-                  INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-                  Important: Run "make generate" to regenerate code after modifying this file
-                  Conditions represent the latest available observations of an object's state
-                items:
-                  description: Condition contains details for one aspect of the current
-                    state of this API Resource.
-                  properties:
-                    lastTransitionTime:
-                      description: |-
-                        lastTransitionTime is the last time the condition transitioned from one status to another.
-                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
-                      format: date-time
-                      type: string
-                    message:
-                      description: |-
-                        message is a human readable message indicating details about the transition.
-                        This may be an empty string.
-                      maxLength: 32768
-                      type: string
-                    observedGeneration:
-                      description: |-
-                        observedGeneration represents the .metadata.generation that the condition was set based upon.
-                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
-                        with respect to the current state of the instance.
-                      format: int64
-                      minimum: 0
-                      type: integer
-                    reason:
-                      description: |-
-                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
-                        Producers of specific condition types may define expected values and meanings for this field,
-                        and whether the values are considered a guaranteed API.
-                        The value should be a CamelCase string.
-                        This field may not be empty.
-                      maxLength: 1024
-                      minLength: 1
-                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
-                      type: string
-                    status:
-                      description: status of the condition, one of True, False, Unknown.
-                      enum:
-                      - "True"
-                      - "False"
-                      - Unknown
-                      type: string
-                    type:
-                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
-                      maxLength: 316
-                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
-                      type: string
-                  required:
-                  - lastTransitionTime
-                  - message
-                  - reason
-                  - status
-                  - type
-                  type: object
-                type: array
               deploymentName:
-                description: DeploymentName is the name of the Deployment created
-                  by this operator.
+                description: DeploymentName is the name of the managed Deployment.
                 type: string
               hpaName:
-                description: HpaName is the name of the HorizontalPodAutoscaler created
-                  by this operator (if any).
+                description: HpaName is the name of the managed HorizontalPodAutoscaler.
                 type: string
               ingressName:
-                description: IngressName is the name of the Ingress created by this
-                  operator (if any).
+                description: IngressName is the name of the managed Ingress.
                 type: string
               readyReplicas:
-                description: ReadyReplicas is the number of ready replicas observed
-                  for the deployment.
+                description: ReadyReplicas is the number of ready pods in the Deployment.
                 format: int32
                 type: integer
               replicas:
-                description: Replicas is the current number of replicas observed for
-                  the deployment.
+                description: Replicas is the actual number of desired replicas.
                 format: int32
                 type: integer
               serviceName:
-                description: ServiceName is the name of the Service created by this
-                  operator.
+                description: ServiceName is the name of the managed Service.
                 type: string
             type: object
         type: object
