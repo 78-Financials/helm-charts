@@ -294,6 +294,18 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.1.0/payaza-0.1.0.tgz
     version: 0.1.0
+  payaza-controller:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-06-21T22:15:00.848039547Z"
+    description: A Helm chart to distribute the project payaza-controller
+    digest: bc793b4b86a2279e3f69fd9bd817496ac0ebc18825ac90fe5e55cba954ff8f5c
+    icon: https://payaza.africa/favicon.ico
+    name: payaza-controller
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-controller-1.0.0/payaza-controller-1.0.0.tgz
+    version: 1.0.0
   payaza-v2:
   - apiVersion: v2
     appVersion: 1.1.0
@@ -517,4 +529,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2025-06-11T08:39:00.41735698Z"
+generated: "2025-06-21T22:15:00.848139164Z"
