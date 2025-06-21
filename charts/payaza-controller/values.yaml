@@ -4,7 +4,7 @@ controllerManager:
   container:
     image:
       repository: 823343520581.dkr.ecr.eu-west-2.amazonaws.com/payaza-controller
-      tag: 1.0.1
+      tag: 1.0.2
     args:
       - "--leader-elect"
       - "--metrics-bind-address=:8443"
@@ -38,7 +38,7 @@ controllerManager:
     seccompProfile:
       type: RuntimeDefault
   terminationGracePeriodSeconds: 10
-  serviceAccountName: payaza-controller-controller-manager
+  serviceAccountName: payaza-controller-manager
 
 # [RBAC]: To enable RBAC (Permissions) configurations
 rbac:
