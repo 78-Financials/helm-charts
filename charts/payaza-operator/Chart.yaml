@@ -1,0 +1,7 @@
+apiVersion: v2
+name: payaza-controller
+description: A Helm chart to distribute the project payaza-controller
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+icon: "https://payaza.africa/favicon.ico"
