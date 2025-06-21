@@ -25,9 +25,9 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   dnsNames:
-    - payaza-controller.{{ .Release.Namespace }}.svc
-    - payaza-controller.{{ .Release.Namespace }}.svc.cluster.local
-    - payaza-controller-metrics-service.{{ .Release.Namespace }}.svc
+    - payaza-.{{ .Release.Namespace }}.svc
+    - payaza-.{{ .Release.Namespace }}.svc.cluster.local
+    - payaza--metrics-service.{{ .Release.Namespace }}.svc
   issuerRef:
     kind: Issuer
     name: selfsigned-issuer
