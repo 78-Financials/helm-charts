@@ -341,6 +341,17 @@ entries:
     version: 1.0.0
   payaza-operator:
   - apiVersion: v2
+    appVersion: 1.0.2
+    created: "2025-06-22T14:55:19.759762516Z"
+    description: A Helm chart to distribute the project payaza
+    digest: 41d0bc7b2e23b64ac7dde087c561d988b9ae4988ef8bbccffb093247d689512f
+    icon: https://payaza.africa/favicon.ico
+    name: payaza-operator
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-operator-1.0.2/payaza-operator-1.0.2.tgz
+    version: 1.0.2
+  - apiVersion: v2
     appVersion: 1.0.1
     created: "2025-06-22T14:21:28.477709091Z"
     description: A Helm chart to distribute the project payaza
@@ -585,4 +596,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2025-06-22T14:21:28.477830951Z"
+generated: "2025-06-22T14:55:19.759899252Z"
