@@ -4,10 +4,18 @@ kind: ClusterRole
 metadata:
   labels:
     {{- include "chart.labels" . | nindent 4 }}
-  name: payaza-controller-metrics-reader
+  name: payaza-metrics-auth-role
 rules:
-- nonResourceURLs:
-  - "/metrics"
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
   verbs:
-  - get
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
 {{- end -}}

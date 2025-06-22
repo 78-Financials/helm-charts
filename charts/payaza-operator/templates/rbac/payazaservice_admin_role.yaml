@@ -1,8 +1,8 @@
 {{- if .Values.rbac.enable }}
-# This rule is not used by the project payaza-controller itself.
+# This rule is not used by the project payaza itself.
 # It is provided to allow the cluster admin to help manage permissions for users.
 #
-# Grants full permissions ('*') over apps.payaza.africa.
+# Grants full permissions ('*') over microservices.payaza.africa.
 # This role is intended for users authorized to modify roles and bindings within the cluster,
 # enabling them to delegate specific permissions to other users or groups as needed.
 
@@ -14,13 +14,13 @@ metadata:
   name: payazaservice-admin-role
 rules:
 - apiGroups:
-  - apps.payaza.africa
+  - microservices.payaza.africa
   resources:
   - payazaservices
   verbs:
   - '*'
 - apiGroups:
-  - apps.payaza.africa
+  - microservices.payaza.africa
   resources:
   - payazaservices/status
   verbs:

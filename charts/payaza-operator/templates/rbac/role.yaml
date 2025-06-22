@@ -5,14 +5,13 @@ kind: ClusterRole
 metadata:
   labels:
     {{- include "chart.labels" . | nindent 4 }}
-  name: payaza-controller-manager-role
+  name: payaza-manager-role
 rules:
 - apiGroups:
   - ""
   resources:
   - configmaps
   - secrets
-  - serviceaccounts
   - services
   verbs:
   - create
@@ -21,6 +20,14 @@ rules:
   - list
   - patch
   - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - list
   - watch
 - apiGroups:
   - apps
@@ -35,32 +42,6 @@ rules:
   - update
   - watch
 - apiGroups:
-  - apps.payaza.africa
-  resources:
-  - payazaservices
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - apps.payaza.africa
-  resources:
-  - payazaservices/finalizers
-  verbs:
-  - update
-- apiGroups:
-  - apps.payaza.africa
-  resources:
-  - payazaservices/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
   - autoscaling
   resources:
   - horizontalpodautoscalers
@@ -72,6 +53,32 @@ rules:
   - patch
   - update
   - watch
+- apiGroups:
+  - microservices.payaza.africa
+  resources:
+  - payazaservices
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - microservices.payaza.africa
+  resources:
+  - payazaservices/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - microservices.payaza.africa
+  resources:
+  - payazaservices/status
+  verbs:
+  - get
+  - patch
+  - update
 - apiGroups:
   - networking.k8s.io
   resources:
