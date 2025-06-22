@@ -12,17 +12,6 @@ rules:
   resources:
   - configmaps
   - secrets
-  verbs:
-  - create
-  - 'delete # Added create/update/patch/delete'
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - ""
-  resources:
   - serviceaccounts
   - services
   verbs:
