@@ -4,7 +4,7 @@ controllerManager:
   container:
     image:
       repository: 823343520581.dkr.ecr.eu-west-2.amazonaws.com/payaza-operator
-      tag: 1.0.1
+      tag: 1.0.2
     args:
       - "--leader-elect"
       - "--metrics-bind-address=:8443"
@@ -55,7 +55,7 @@ crd:
   # the Helm release is uninstalled.
   # NOTE: Removing the CRDs will also remove all cert-manager CR(s)
   # (Certificates, Issuers, ...) due to garbage collection.
-  keep: true
+  keep: false
 
 # [METRICS]: Set to true to generate manifests for exporting metrics.
 # To disable metrics export set false, and ensure that the

@@ -2,6 +2,6 @@ apiVersion: v2
 name: payaza-operator
 description: A Helm chart to distribute the project payaza
 type: application
-version: 1.0.1
-appVersion: "1.0.1"
+version: 1.0.2
+appVersion: "1.0.2"
 icon: "https://payaza.africa/favicon.ico"
