@@ -1,8 +1,8 @@
 {{- if .Values.rbac.enable }}
-# This rule is not used by the project payaza-controller itself.
+# This rule is not used by the project payaza itself.
 # It is provided to allow the cluster admin to help manage permissions for users.
 #
-# Grants permissions to create, update, and delete resources within the apps.payaza.africa.
+# Grants permissions to create, update, and delete resources within the microservices.payaza.africa.
 # This role is intended for users who need to manage these resources
 # but should not control RBAC or manage permissions for others.
 
@@ -14,7 +14,7 @@ metadata:
   name: payazaservice-editor-role
 rules:
 - apiGroups:
-  - apps.payaza.africa
+  - microservices.payaza.africa
   resources:
   - payazaservices
   verbs:
@@ -26,7 +26,7 @@ rules:
   - update
   - watch
 - apiGroups:
-  - apps.payaza.africa
+  - microservices.payaza.africa
   resources:
   - payazaservices/status
   verbs:

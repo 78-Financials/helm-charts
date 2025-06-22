@@ -5,10 +5,10 @@
   {{- else if .Values.nameOverride }}
     {{ .Values.nameOverride | trunc 63 | trimSuffix "-" }}
   {{- else }}
-    payaza-controller
+    payaza
   {{- end }}
 {{- else }}
-  payaza-controller
+  payaza
 {{- end }}
 {{- end }}
 

@@ -1,0 +1,315 @@
+{{- if .Values.crd.enable }}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  labels:
+    {{- include "chart.labels" . | nindent 4 }}
+  annotations:
+    {{- if .Values.crd.keep }}
+    "helm.sh/resource-policy": keep
+    {{- end }}
+    controller-gen.kubebuilder.io/version: v0.18.0
+  name: payazaservices.microservices.payaza.africa
+spec:
+  group: microservices.payaza.africa
+  names:
+    kind: PayazaService
+    listKind: PayazaServiceList
+    plural: payazaservices
+    singular: payazaservice
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: PayazaService is the Schema for the PayazaServices API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: PayazaServiceSpec defines the desired state of PayazaService
+            properties:
+              additionalSecrets:
+                description: |-
+                  AdditionalSecrets is a list of names of existing Kubernetes Secrets to be mounted as environment variables.
+                  These Secrets must exist in the same namespace as the Microservice.
+                items:
+                  properties:
+                    name:
+                      description: Name is the name of the Kubernetes Secret.
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
+              autoscaling:
+                description: |-
+                  Autoscaling defines the Horizontal Pod Autoscaler configuration for the deployment.
+                  If present, it enables HPA and manages the replica count automatically,
+                  overriding the 'replicas' field for dynamic scaling.
+                properties:
+                  maxReplicas:
+                    description: |-
+                      MaxReplicas is the upper limit for the number of replicas to which the autoscaler
+                      can scale up. It cannot be less than minReplicas.
+                    format: int32
+                    minimum: 1
+                    type: integer
+                  minReplicas:
+                    description: |-
+                      MinReplicas is the lower limit for the number of replicas to which the autoscaler
+                      can scale down. It defaults to 1 pod.
+                    format: int32
+                    minimum: 1
+                    type: integer
+                  targetCPUUtilizationPercentage:
+                    description: |-
+                      TargetCPUUtilizationPercentage is the target average CPU utilization
+                      (as a percentage of the requested CPU) over all the pods.
+                      If not specified, the HPA will not scale based on CPU.
+                    format: int32
+                    maximum: 100
+                    minimum: 1
+                    type: integer
+                required:
+                - maxReplicas
+                - minReplicas
+                type: object
+              configs:
+                additionalProperties:
+                  type: string
+                description: Configs holds key-value pairs for ConfigMaps.
+                type: object
+              image:
+                description: Image specifies the container image for the microservice.
+                type: string
+              ingress:
+                description: Ingress specifies configuration for an Ingress resource.
+                properties:
+                  host:
+                    description: Host specifies the hostname for the Ingress.
+                    type: string
+                  path:
+                    default: /
+                    description: Path specifies the path for the Ingress rule.
+                    type: string
+                  tls:
+                    description: TLS specifies TLS configuration for the Ingress.
+                    properties:
+                      hosts:
+                        description: Hosts lists the hosts that the TLS certificate
+                          is valid for.
+                        items:
+                          type: string
+                        type: array
+                      secretName:
+                        description: SecretName refers to the name of the Kubernetes
+                          Secret that contains the TLS certificate and key.
+                        type: string
+                    required:
+                    - secretName
+                    type: object
+                required:
+                - host
+                type: object
+              port:
+                description: Port specifies the container port the microservice listens
+                  on.
+                format: int32
+                maximum: 65535
+                minimum: 1
+                type: integer
+              replicas:
+                description: Replicas specifies the number of desired pods.
+                format: int32
+                minimum: 1
+                type: integer
+              resources:
+                description: |-
+                  Resources defines the computing resources required by the container.
+                  More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+                properties:
+                  claims:
+                    description: |-
+                      Claims lists the names of resources, defined in spec.resourceClaims,
+                      that are used by this container.
+
+                      This is an alpha field and requires enabling the
+                      DynamicResourceAllocation feature gate.
+
+                      This field is immutable. It can only be set for containers.
+                    items:
+                      description: ResourceClaim references one entry in PodSpec.ResourceClaims.
+                      properties:
+                        name:
+                          description: |-
+                            Name must match the name of one entry in pod.spec.resourceClaims of
+                            the Pod where this field is used. It makes that resource available
+                            inside a container.
+                          type: string
+                        request:
+                          description: |-
+                            Request is the name chosen for a request in the referenced claim.
+                            If empty, everything from the claim is made available, otherwise
+                            only the result of this request.
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
+                    x-kubernetes-list-map-keys:
+                    - name
+                    x-kubernetes-list-type: map
+                  limits:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                      x-kubernetes-int-or-string: true
+                    description: |-
+                      Limits describes the maximum amount of compute resources allowed.
+                      More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+                    type: object
+                  requests:
+                    additionalProperties:
+                      anyOf:
+                      - type: integer
+                      - type: string
+                      pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                      x-kubernetes-int-or-string: true
+                    description: |-
+                      Requests describes the minimum amount of compute resources required.
+                      If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+                      otherwise to an implementation-defined value. Requests cannot exceed Limits.
+                      More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+                    type: object
+                type: object
+              secrets:
+                additionalProperties:
+                  type: string
+                description: Secrets holds key-value pairs for Secrets. Values should
+                  be base64 encoded.
+                type: object
+              serviceType:
+                default: ClusterIP
+                description: ServiceType specifies the Kubernetes Service type (e.g.,
+                  ClusterIP, NodePort, LoadBalancer).
+                enum:
+                - ClusterIP
+                - NodePort
+                - LoadBalancer
+                type: string
+            required:
+            - image
+            - port
+            - replicas
+            type: object
+          status:
+            description: PayazaServiceStatus defines the observed state of PayazaService
+            properties:
+              conditions:
+                description: Conditions represent the latest available observations
+                  of an object's state.
+                items:
+                  description: Condition contains details for one aspect of the current
+                    state of this API Resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              configMapName:
+                description: ConfigMapName is the name of the ConfigMap created for
+                  this service.
+                type: string
+              deploymentName:
+                description: DeploymentName is the name of the Deployment created
+                  for this service.
+                type: string
+              horizontalPodAutoscalerName:
+                description: HorizontalPodAutoscalerName is the name of the HorizontalPodAutoscaler
+                  created for this service.
+                type: string
+              ingressName:
+                description: IngressName is the name of the Ingress created for this
+                  service.
+                type: string
+              secretName:
+                description: SecretName is the name of the Secret created for this
+                  service.
+                type: string
+              serviceName:
+                description: ServiceName is the name of the Service created for this
+                  service.
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+{{- end -}}
