@@ -102,8 +102,26 @@ spec:
               ingress:
                 description: Ingress specifies configuration for an Ingress resource.
                 properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    description: |-
+                      NEW FIELD: Annotations allows specifying custom annotations for the Ingress resource.
+                      Benefit: Provides a flexible way for users to pass controller-specific
+                      configurations (e.g., rewrite rules, backend service settings, certificate
+                      annotations for cert-manager) directly from their CRD.
+                    type: object
                   host:
                     description: Host specifies the hostname for the Ingress.
+                    type: string
+                  ingressClassName:
+                    description: |-
+                      NEW FIELD: IngressClassName specifies the name of the IngressClass
+                      responsible for this Ingress.
+                      Benefit: Allows users to explicitly choose which Ingress controller
+                      (e.g., "nginx", "traefik", "gce") should manage their Ingress,
+                      rather than relying on a default or hardcoding it in the controller.
+                      Making it a pointer (*string) allows it to be optional.
                     type: string
                   path:
                     default: /
