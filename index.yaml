@@ -145,6 +145,16 @@ entries:
     version: 0.1.0
   payaza:
   - apiVersion: v2
+    appVersion: 1.1.1
+    created: "2025-09-09T07:29:40.669633122Z"
+    description: Adding annotations to the deployment
+    digest: 009556aff257e53651685fad9534a53845dd4af85d40b5271b72b5c2b92af35b
+    name: payaza
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-0.3.9/payaza-0.3.9.tgz
+    version: 0.3.9
+  - apiVersion: v2
     appVersion: 1.1.0
     created: "2024-04-29T14:16:22.63515583Z"
     description: Fixing error
@@ -596,4 +606,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2025-06-22T14:55:19.759899252Z"
+generated: "2025-09-09T07:29:40.669838224Z"
