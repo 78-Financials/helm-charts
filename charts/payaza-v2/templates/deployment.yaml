@@ -3,6 +3,10 @@ kind: Deployment
 metadata:
   name: {{ .Values.deployment.name | quote }}
   namespace: {{ .Values.namespace | quote }}
+  {{- if .Values.deployment.annotations }}
+  annotations:
+    {{- toYaml .Values.deployment.annotations | nindent 4 }}
+  {{- end }}
 spec:
   # replicas: {{ .Values.deployment.replicas }}
   selector:
@@ -10,8 +14,11 @@ spec:
       app: {{ .Values.deployment.name | quote }}
   template:
     metadata:
-      # annotations:
-      #   rollme: {{ randAlphaNum 5 | quote }}
+      annotations:
+        # rollme: {{ randAlphaNum 5 | quote }}
+        {{- if .Values.deployment.annotations }}
+        {{- toYaml .Values.deployment.annotations | nindent 8 }}
+        {{- end }}
       labels:
         app: {{ .Values.deployment.name | quote }}
         serverless: {{ .Values.labels.serverless | quote }}
