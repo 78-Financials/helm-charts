@@ -12,6 +12,13 @@ deployment:
   # replicas: 1
   port: 80
   name: "nginx"
+  annotations: {}
+    # Example annotations (applied to both deployment and pod):
+    # deployment.kubernetes.io/revision: "1"
+    # app.kubernetes.io/managed-by: "Helm"
+    # prometheus.io/scrape: "true"
+    # prometheus.io/port: "8080"
+    # prometheus.io/path: "/metrics"
 
 # Namespace
 namespace: "development"
