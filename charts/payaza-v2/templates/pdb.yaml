@@ -1,0 +1,13 @@
+{{- if .Values.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.deployment.name | quote }}
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  # This handles both strings ("50%") and integers (1)
+  minAvailable: {{ .Values.pdb.minAvailable | default "50%" }}
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.name | quote }}
+{{- end }}
