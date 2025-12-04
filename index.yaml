@@ -386,6 +386,16 @@ entries:
   payaza-v2:
   - apiVersion: v2
     appVersion: 1.1.1
+    created: "2025-12-04T14:22:42.588123783Z"
+    description: Adding PodDisruptionBudget and Spread Zone
+    digest: eda53e7e1c7855e627bfde8e19186252be87072596a44dadf62c1f78a723b19b
+    name: payaza-v2
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/payaza-v2-1.0.3/payaza-v2-1.0.3.tgz
+    version: 1.0.3
+  - apiVersion: v2
+    appVersion: 1.1.1
     created: "2025-09-09T07:33:24.443224314Z"
     description: Adding annotations to the deployment
     digest: efa7c7c7d27eecb7292433065997c0850905d83b7f8f8fe0404df1aa2c54e28b
@@ -616,4 +626,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2025-09-09T07:33:24.443412343Z"
+generated: "2025-12-04T14:22:42.588333683Z"
