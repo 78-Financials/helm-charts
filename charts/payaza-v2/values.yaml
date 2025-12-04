@@ -75,6 +75,10 @@ service:
   annotations:
     enabled: false # Set as `true` for apis that uses http/2
 
+pdb:
+  enabled: true
+  minAvailable: "50%" # Automatically calculates 1 when you have 2 replicas
+
 # service account
 serviceAccount:
   enable: false # Set to `true` to create a service account

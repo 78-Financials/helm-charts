@@ -15,7 +15,6 @@ spec:
   template:
     metadata:
       annotations:
-        # rollme: {{ randAlphaNum 5 | quote }}
         {{- if .Values.deployment.annotations }}
         {{- toYaml .Values.deployment.annotations | nindent 8 }}
         {{- end }}
@@ -31,6 +30,13 @@ spec:
       {{- if .Values.serviceAccount.enable }}
       serviceAccountName: {{ .Values.serviceAccount.name | quote }}
       {{- end }}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: {{ .Values.deployment.name | quote }}
       containers:
         - name: {{ .Values.deployment.name | quote }}
           {{- if .Values.deployment.blueGreen }}
@@ -74,24 +80,18 @@ spec:
             - secretRef:
                 name: {{ .Values.deployment.name | quote }}
             {{- end}}
-
             {{- if .Values.env.external_secret.create }}
             - secretRef:
                 name: {{ .Values.env.external_secret.secretName }}
             {{- end}}
-
             {{- if .Values.additionalSecrets }}
-            # additional secrets
             {{- toYaml .Values.additionalSecrets | nindent 12 }}
             {{- end}}
-
             {{- if .Values.env.configmap.create }}
             - configMapRef:
                 name: {{ .Values.deployment.name | quote }}
             {{- end}}
-
             {{- if .Values.additionalConfigs }}
-            # additional configs
             {{- toYaml .Values.additionalConfigs | nindent 12 }}
             {{- end}}
           {{- end }}
@@ -100,9 +100,6 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- else }}
           resources:
-            # requests:
-            #   cpu: "10m"
-            #   memory: "50Mi"
             limits:
               cpu: "2"
               memory: "2Gi"
