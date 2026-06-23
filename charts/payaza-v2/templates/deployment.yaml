@@ -47,10 +47,15 @@ spec:
           imagePullPolicy: {{ .Values.deployment.pullPolicy }}
           ports:
           - containerPort: {{ .Values.deployment.port }}
-          {{- if .Values.volume.bind }}
+          {{- if or .Values.volume.bind .Values.additionalVolumeMounts }}
           volumeMounts:
+          {{- if .Values.volume.bind }}
           - name: {{ .Values.deployment.name | quote }}
             mountPath: {{ .Values.volume.path }}
+          {{- end }}
+          {{- if .Values.additionalVolumeMounts }}
+          {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
+          {{- end }}
           {{- end }}
           {{- if .Values.probes.readiness.enable }}
           readinessProbe:
@@ -104,12 +109,17 @@ spec:
               cpu: "2"
               memory: "2Gi"
           {{- end }}
-      {{- if .Values.pvc.create }}
+      {{- if or .Values.pvc.create .Values.additionalVolumes }}
       volumes:
+      {{- if .Values.pvc.create }}
       - name: {{ .Values.deployment.name | quote }}
         persistentVolumeClaim:
           claimName: {{ .Values.pvc.name }}
-      {{- end}}
+      {{- end }}
+      {{- if .Values.additionalVolumes }}
+      {{- toYaml .Values.additionalVolumes | nindent 6 }}
+      {{- end }}
+      {{- end }}
       {{- if .Values.environment }}
       nodeSelector:
         environment: {{ .Values.environment.name | quote }}

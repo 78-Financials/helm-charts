@@ -105,6 +105,13 @@ env:
     secretName: my-secret  # Name of the target secret to create
     secretManagerRef: payaza-prod  # Name of the secret on secret manager (payaza-prod)
 
+  crypto_secret:
+    create: false  # Set to true to create a separate ExternalSecret for file-mounted secrets (e.g. PEM keys)
+    refreshInterval: 1h
+    secretStoreName: aws-secretsmanager
+    secretName: my-crypto-secret
+    secretManagerRef: my-aws-crypto-secret-path
+
 additionalSecrets:
   []
   # - secretRef:
@@ -114,6 +121,21 @@ additionalConfigs:
   []
   # - configMapRef:
   #     name:  existing-configMap-name
+
+additionalVolumeMounts:
+  []
+  # - name: crypto-keys
+  #   mountPath: /etc/myapp/keys
+  #   readOnly: true
+
+additionalVolumes:
+  []
+  # - name: crypto-keys
+  #   secret:
+  #     secretName: my-crypto-secret
+  #     items:
+  #       - key: bank_public.pem
+  #         path: bank_public.pem
 
 # autoscaling
 # This is used for scaling pods horizontally.
