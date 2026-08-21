@@ -49,10 +49,10 @@ probes:
     timeoutSeconds: 2
     successThreshold: 1
     failureThreshold: 3
-
+otelAgent:
+  enabled: false
 # Environment
-environment:
-  {}
+environment: {}
   # uncomment name below to set environment variables to `Sandbox` or `Production`.
   # Must be set to `Production` for production deployments and `Sandbox` for staging and development deployments.
   # name: "Sandbox | Production"
@@ -99,37 +99,33 @@ env:
     data: {}
 
   external_secret:
-    create: false  # Set to true to create the ExternalSecret resource
-    refreshInterval: 10m  # Interval at which to refresh the secret (e.g., 10m)
-    secretStoreName: aws-secretsmanager  # Name of the secret store (Default aws-secretsmanager)
-    secretName: my-secret  # Name of the target secret to create
-    secretManagerRef: payaza-prod  # Name of the secret on secret manager (payaza-prod)
+    create: false # Set to true to create the ExternalSecret resource
+    refreshInterval: 10m # Interval at which to refresh the secret (e.g., 10m)
+    secretStoreName: aws-secretsmanager # Name of the secret store (Default aws-secretsmanager)
+    secretName: my-secret # Name of the target secret to create
+    secretManagerRef: payaza-prod # Name of the secret on secret manager (payaza-prod)
 
   crypto_secret:
-    create: false  # Set to true to create a separate ExternalSecret for file-mounted secrets (e.g. PEM keys)
+    create: false # Set to true to create a separate ExternalSecret for file-mounted secrets (e.g. PEM keys)
     refreshInterval: 1h
     secretStoreName: aws-secretsmanager
     secretName: my-crypto-secret
     secretManagerRef: my-aws-crypto-secret-path
 
-additionalSecrets:
-  []
+additionalSecrets: []
   # - secretRef:
   #     name: existing-secret-name
 
-additionalConfigs:
-  []
+additionalConfigs: []
   # - configMapRef:
   #     name:  existing-configMap-name
 
-additionalVolumeMounts:
-  []
+additionalVolumeMounts: []
   # - name: crypto-keys
   #   mountPath: /etc/myapp/keys
   #   readOnly: true
 
-additionalVolumes:
-  []
+additionalVolumes: []
   # - name: crypto-keys
   #   secret:
   #     secretName: my-crypto-secret
@@ -155,10 +151,10 @@ ingress:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
-    - host: nginx.payaza.app
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+  - host: nginx.payaza.app
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
   tls: []
 
 # persistent volume
