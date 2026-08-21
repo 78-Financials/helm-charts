@@ -79,6 +79,15 @@ spec:
             successThreshold: {{ .Values.probes.liveness.successThreshold }}
             failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
           {{- end }}
+          {{- if .Values.otelAgent.enabled }}
+          env:
+          - name: HOST_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: "http://$(HOST_IP):4317"
+          {{- end }}
           {{- if .Values.env }}
           envFrom:
             {{- if .Values.env.secret.create }}
