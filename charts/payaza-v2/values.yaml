@@ -65,6 +65,20 @@ labels:
 tolerations:
   enabled: false # defaults to `false`. Must be `true` for Production
 
+# Arbitrary nodeSelector entries, merged alongside the `environment.name` selector above.
+# Use this to target a dedicated node pool for a specific service (e.g. a tainted pool),
+# independent of the shared Staging/Production pools.
+nodeSelector: {}
+  # workload: grats
+
+# Arbitrary tolerations, appended alongside the `environment`-based toleration above
+# (only rendered when set; independent of `tolerations.enabled`).
+additionalTolerations: []
+  # - key: "workload"
+  #   operator: "Equal"
+  #   value: "grats"
+  #   effect: "NoSchedule"
+
 # Service
 service:
   type: NodePort # NodePort, LoadBalancer, ClusterIP

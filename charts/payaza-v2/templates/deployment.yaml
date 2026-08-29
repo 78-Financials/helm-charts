@@ -129,16 +129,26 @@ spec:
       {{- toYaml .Values.additionalVolumes | nindent 6 }}
       {{- end }}
       {{- end }}
-      {{- if .Values.environment }}
+      {{- if or .Values.environment .Values.nodeSelector }}
       nodeSelector:
+        {{- if .Values.environment }}
         environment: {{ .Values.environment.name | quote }}
+        {{- end }}
+        {{- if .Values.nodeSelector }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+        {{- end }}
       {{- end }}
-      {{- if .Values.tolerations.enabled }}
+      {{- if or .Values.tolerations.enabled .Values.additionalTolerations }}
       tolerations:
+      {{- if .Values.tolerations.enabled }}
       - key: "environment"
         operator: "Equal"
         value: {{ .Values.environment.name | quote }}
         effect: "NoSchedule"
+      {{- end }}
+      {{- if .Values.additionalTolerations }}
+      {{- toYaml .Values.additionalTolerations | nindent 6 }}
+      {{- end }}
       {{- end }}
       imagePullSecrets:
         - name: regcred
