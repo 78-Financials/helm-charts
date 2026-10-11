@@ -1,0 +1,45 @@
+{{- if .Values.httpRoute.enabled }}
+{{- if not .Values.httpRoute.sectionNames }}
+{{- fail "httpRoute.sectionNames must list at least one Gateway listener (e.g. web, websecure-dev)" }}
+{{- end }}
+{{- if not .Values.httpRoute.hostnames }}
+{{- fail "httpRoute.hostnames must list at least one hostname" }}
+{{- end }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Values.deployment.name | quote }}
+  namespace: {{ .Values.namespace | quote }}
+  labels:
+    {{- include "payaza.labels" . | nindent 4 }}
+  {{- with .Values.httpRoute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+    {{- range .Values.httpRoute.sectionNames }}
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: {{ $.Values.httpRoute.gateway.name }}
+      namespace: {{ $.Values.httpRoute.gateway.namespace }}
+      sectionName: {{ . }}
+    {{- end }}
+  hostnames:
+    {{- toYaml .Values.httpRoute.hostnames | nindent 4 }}
+  rules:
+    {{- if .Values.httpRoute.rules }}
+    {{- toYaml .Values.httpRoute.rules | nindent 4 }}
+    {{- else }}
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: {{ .Values.deployment.name }}
+          port: {{ .Values.service.protocol.http }}
+          weight: 1
+    {{- end }}
+{{- end }}
