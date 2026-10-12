@@ -567,6 +567,19 @@ entries:
     version: 0.0.1
   rove10:
   - apiVersion: v2
+    created: "2026-10-12T07:50:15.60903914Z"
+    description: 'Rove10 application chart. 1.0.0 replaces the unrelated 2023 0.1.x
+      chart of the same name: it is forked from payaza-v2 1.1.3 with classic Ingress
+      replaced by a Gateway API HTTPRoute (also for the blue-green green stack), since
+      the rove10 cluster''s Traefik serves Gateway API only. Helper names are kept
+      as payaza.* so upstream payaza-v2 fixes diff cleanly.'
+    digest: 3b4afe5324f9436fdf110e11ca3d7e2b25d43f4ed65a7385ad7b49c33e49c597
+    name: rove10
+    type: application
+    urls:
+    - https://github.com/78-Financials/helm-charts/releases/download/rove10-1.0.0/rove10-1.0.0.tgz
+    version: 1.0.0
+  - apiVersion: v2
     appVersion: 1.16.0
     created: "2023-04-25T10:06:46.239852102Z"
     description: A Helm chart for Kubernetes
@@ -656,4 +669,4 @@ entries:
     urls:
     - https://github.com/78-Financials/helm-charts/releases/download/rove10-0.1.0/rove10-0.1.0.tgz
     version: 0.1.0
-generated: "2026-08-29T09:14:15.968797082Z"
+generated: "2026-10-12T07:50:15.609249078Z"
