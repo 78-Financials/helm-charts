@@ -1,0 +1,253 @@
+{{- if .Values.deployment.blueGreen }}
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: green-{{ .Values.deployment.name }}
+  namespace: {{ .Values.namespace | quote }}
+  {{- if .Values.deployment.annotations }}
+  annotations:
+    {{- toYaml .Values.deployment.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.deployment.replicas }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: green-{{ .Values.deployment.name }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.deployment.annotations }}
+        {{- toYaml .Values.deployment.annotations | nindent 8 }}
+        {{- end }}
+        {{- if .Values.env.configmap.create }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if .Values.env.secret.create }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- end }}
+      labels:
+        app: green-{{ .Values.deployment.name }}
+        {{- if .Values.labels.serverless }}
+        serverless: {{ .Values.labels.serverless | quote }}
+        {{- end }}
+        version: {{ .Values.deployment.tag | quote }}
+    spec:
+      {{- if or .Values.serviceAccount.create .Values.serviceAccount.name }}
+      serviceAccountName: {{ include "payaza.serviceAccountName" . | quote }}
+      {{- end }}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: green-{{ .Values.deployment.name }}
+      containers:
+        - name: {{ .Values.deployment.name | quote }}
+          image: {{ .Values.deployment.image }}:{{ .Values.deployment.tag }}
+          imagePullPolicy: {{ .Values.deployment.pullPolicy }}
+          ports:
+          - containerPort: {{ .Values.deployment.port }}
+          {{- if or .Values.volume.bind .Values.additionalVolumeMounts }}
+          volumeMounts:
+          {{- if .Values.volume.bind }}
+          - name: {{ .Values.deployment.name | quote }}
+            mountPath: {{ .Values.volume.path }}
+          {{- end }}
+          {{- if .Values.additionalVolumeMounts }}
+          {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.probes.readiness.enable }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+            successThreshold: {{ .Values.probes.readiness.successThreshold }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.probes.liveness.enable }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+            successThreshold: {{ .Values.probes.liveness.successThreshold }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.otelAgent.enabled }}
+          env:
+          - name: HOST_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: "http://$(HOST_IP):4317"
+          {{- end }}
+          {{- if .Values.env }}
+          envFrom:
+            {{- if .Values.env.secret.create }}
+            - secretRef:
+                name: {{ .Values.deployment.name | quote }}
+            {{- end}}
+            {{- if .Values.env.external_secret.create }}
+            - secretRef:
+                name: {{ include "payaza.externalSecretName" . | quote }}
+            {{- end}}
+            {{- if .Values.additionalSecrets }}
+            {{- toYaml .Values.additionalSecrets | nindent 12 }}
+            {{- end}}
+            {{- if .Values.env.configmap.create }}
+            - configMapRef:
+                name: {{ .Values.deployment.name | quote }}
+            {{- end}}
+            {{- if .Values.additionalConfigs }}
+            {{- toYaml .Values.additionalConfigs | nindent 12 }}
+            {{- end}}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- if or .Values.pvc.create .Values.additionalVolumes }}
+      volumes:
+      {{- if .Values.pvc.create }}
+      - name: {{ .Values.deployment.name | quote }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.pvc.name }}
+      {{- end }}
+      {{- if .Values.additionalVolumes }}
+      {{- toYaml .Values.additionalVolumes | nindent 6 }}
+      {{- end }}
+      {{- end }}
+      {{- if or .Values.environment .Values.nodeSelector }}
+      nodeSelector:
+        {{- if .Values.environment }}
+        environment: {{ .Values.environment.name | quote }}
+        {{- end }}
+        {{- if .Values.nodeSelector }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- if or .Values.tolerations.enabled .Values.additionalTolerations }}
+      tolerations:
+      {{- if .Values.tolerations.enabled }}
+      - key: "environment"
+        operator: "Equal"
+        value: {{ required "environment.name is required when tolerations.enabled is true" (.Values.environment).name | quote }}
+        effect: "NoSchedule"
+      {{- end }}
+      {{- if .Values.additionalTolerations }}
+      {{- toYaml .Values.additionalTolerations | nindent 6 }}
+      {{- end }}
+      {{- end }}
+      imagePullSecrets:
+        - name: regcred
+
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: green-{{ .Values.deployment.name }}
+  namespace: {{ .Values.namespace | quote }}
+  {{- if .Values.service.annotations.enabled }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-alpn-policy: "HTTP2Preferred"
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "https"
+  {{- end }}
+spec:
+  selector:
+    app: green-{{ .Values.deployment.name }}
+  ports:
+    - name: http
+      protocol: {{ .Values.service.protocol.name }}
+      port: {{ .Values.service.protocol.http }}
+      targetPort: {{ .Values.deployment.port }}
+    {{- if .Values.service.protocol.https }}
+    - name: https
+      protocol: {{ .Values.service.protocol.name }}
+      port: {{ .Values.service.protocol.https }}
+      targetPort: {{ .Values.deployment.port }}
+    {{- end }}
+  type: {{ .Values.service.type }}
+
+{{- if .Values.autoscaling.enabled }}
+
+---
+# hpa
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: green-{{ .Values.deployment.name }}
+  namespace: {{ .Values.namespace | quote }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: green-{{ .Values.deployment.name }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+{{- end }}
+
+{{- if .Values.httpRoute.enabled }}
+
+---
+# HTTPRoute (Gateway API replacement for payaza-v2's green Ingress): same
+# hostnames prefixed with `green-`, pointing at the green Service.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: green-{{ .Values.deployment.name }}
+  namespace: {{ .Values.namespace | quote }}
+  labels:
+    {{- include "payaza.labels" . | nindent 4 }}
+  {{- with .Values.httpRoute.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  parentRefs:
+    {{- range .Values.httpRoute.sectionNames }}
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: {{ $.Values.httpRoute.gateway.name }}
+      namespace: {{ $.Values.httpRoute.gateway.namespace }}
+      sectionName: {{ . }}
+    {{- end }}
+  hostnames:
+    {{- range .Values.httpRoute.hostnames }}
+    - {{ printf "green-%s" . | quote }}
+    {{- end }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: green-{{ .Values.deployment.name }}
+          port: {{ .Values.service.protocol.http }}
+          weight: 1
+{{- end }}
+{{- end }}

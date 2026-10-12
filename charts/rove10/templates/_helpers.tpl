@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "rove10.name" -}}
+{{- define "payaza.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "rove10.fullname" -}}
+{{- define "payaza.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,36 +26,42 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "rove10.chart" -}}
+{{- define "payaza.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "rove10.labels" -}}
-helm.sh/chart: {{ include "rove10.chart" . }}
-{{ include "rove10.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
-app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
+{{- define "payaza.labels" -}}
+helm.sh/chart: {{ include "payaza.chart" . }}
+{{ include "payaza.selectorLabels" . }}
+app.kubernetes.io/version: {{ .Values.deployment.tag | toString | trunc 63 | trimSuffix "-" | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
 Selector labels
 */}}
-{{- define "rove10.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "rove10.name" . }}
+{{- define "payaza.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "payaza.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Name of the Secret the ExternalSecret writes (and the pod reads via envFrom).
+Defaults to the deployment name.
+*/}}
+{{- define "payaza.externalSecretName" -}}
+{{- default .Values.deployment.name .Values.env.external_secret.secretName }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "rove10.serviceAccountName" -}}
+{{- define "payaza.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "rove10.fullname" .) .Values.serviceAccount.name }}
+{{- default .Values.deployment.name .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

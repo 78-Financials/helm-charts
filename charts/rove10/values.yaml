@@ -1,15 +1,24 @@
-# Default values for rove10.
+# Default values for payaza.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 # Deployment
 deployment:
+  blueGreen: false # `true` also deploys a `green-<name>` stack (own Deployment/Service/HPA/HTTPRoute) running `tag`; the main stack then runs `blue`
   image: "nginx"
   tag: "latest"
+  blue: "old" # If `blueGreen = true`, then `blue` must be the tag of the current running application before the new build
   pullPolicy: IfNotPresent
-  replicas: 1
+  replicas: 1 # ignored when `autoscaling.enabled` is true
   port: 80
   name: "nginx"
+  annotations: {}
+    # Example annotations (applied to both deployment and pod):
+    # deployment.kubernetes.io/revision: "1"
+    # app.kubernetes.io/managed-by: "Helm"
+    # prometheus.io/scrape: "true"
+    # prometheus.io/port: "8080"
+    # prometheus.io/path: "/metrics"
 
 # Namespace
 namespace: "development"
@@ -21,26 +30,75 @@ resources:
     memory: "50Mi"
   limits:
     memory: "100Mi"
+    cpu: "0.5"
 
+probes:
+  liveness:
+    enable: false
+    path: /
+    initialDelaySeconds: 60
+    periodSeconds: 5
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 5
+  readiness:
+    enable: false
+    path: /
+    initialDelaySeconds: 20
+    periodSeconds: 2
+    timeoutSeconds: 2
+    successThreshold: 1
+    failureThreshold: 3
+otelAgent:
+  enabled: false
 # Environment
 environment: {}
-  # uncomment name below to set environment variables to `Staging` or `Production`. Development does not have a label
-  # Must be set to `Production` for production deployments and `Staging` for staging deployments.
-  # name: "Staging | Production"
+  # uncomment name below to set environment variables to `Sandbox` or `Production`.
+  # Must be set to `Production` for production deployments and `Sandbox` for staging and development deployments.
+  # name: "Sandbox | Production"
+
+# Optional `serverless` pod label. Leave empty (no label) unless a Fargate profile
+# selects on it, e.g. serverless: "fargate".
+labels:
+  serverless: ""
 
 # Tolerations
 tolerations:
-  enabled: false # set to `false` for development alone. Must be `true` for Staging and Production
+  enabled: false # defaults to `false`. Must be `true` for Production
+
+# Arbitrary nodeSelector entries, merged alongside the `environment.name` selector above.
+# Use this to target a dedicated node pool for a specific service (e.g. a tainted pool),
+# independent of the shared Staging/Production pools.
+nodeSelector: {}
+  # workload: grats
+
+# Arbitrary tolerations, appended alongside the `environment`-based toleration above
+# (only rendered when set; independent of `tolerations.enabled`).
+additionalTolerations: []
+  # - key: "workload"
+  #   operator: "Equal"
+  #   value: "grats"
+  #   effect: "NoSchedule"
 
 # Service
 service:
-  type: NodePort # NodePort, LoadBalancer, ClusterIP
+  type: ClusterIP # ClusterIP, NodePort, LoadBalancer. Traffic enters through the Gateway, so ClusterIP is the norm.
   protocol:
     name: TCP
     http: 80
+    # https: 443 # uncomment to also expose a second port; it maps to the same container port (`deployment.port`)
   annotations:
     enabled: false # Set as `true` for apis that uses http/2
-    annotations: {}
+
+pdb:
+  enabled: true # only rendered when running 2+ replicas (a PDB on a single pod blocks node drains)
+  minAvailable: "50%" # Automatically calculates 1 when you have 2 replicas
+
+# service account
+serviceAccount:
+  create: false # Set to `true` to create a service account
+  name: "" # Name of the service account. Defaults to the deployment name when `create` is true; set alone to use an existing one.
+  annotations: {} # e.g. eks.amazonaws.com/role-arn for IRSA
 
 # Environment Variables sources
 env:
@@ -48,23 +106,82 @@ env:
     # set to `true` to create a secret with the environment variables. Secret name is same with the deployment name.
     # data should contain key value pairs in the format of "key":"value".
     create: false
-    data: 
-      {}
+    data: {}
+
   configmap:
     # set to `true` to create a configmap with the environment variables. Configmap name is same with the deployment name.
     # data should contain key value pairs in the format of "key":"value".
-    create: false 
-    data: 
-      {}
+    create: false
+    data: {}
+
+  external_secret:
+    create: false # Set to true to create the ExternalSecret resource
+    # Must match a CRD version the installed External Secrets Operator serves. The rove10
+    # cluster runs ESO 0.9.x (v1beta1 only); switch to `external-secrets.io/v1` after upgrading ESO.
+    apiVersion: external-secrets.io/v1beta1
+    refreshInterval: 10m # Interval at which to refresh the secret (e.g., 10m)
+    secretStoreName: aws-secrets-manager # Name of the (Cluster)SecretStore in the release namespace
+    secretStoreKind: SecretStore # SecretStore | ClusterSecretStore
+    secretName: "" # Name of the target Secret the pod reads via envFrom. Defaults to the deployment name.
+    secretManagerRef: "" # REQUIRED when create is true: name of the entry in AWS Secrets Manager, e.g. rove10-api-dev
+
+  crypto_secret:
+    create: false # Set to true to create a separate ExternalSecret for file-mounted secrets (e.g. PEM keys)
+    apiVersion: external-secrets.io/v1beta1
+    refreshInterval: 1h
+    secretStoreName: aws-secrets-manager
+    secretStoreKind: SecretStore
+    secretName: "" # Defaults to <deployment name>-crypto-keys. Mount it via additionalVolumes.
+    secretManagerRef: "" # REQUIRED when create is true
+
+additionalSecrets: []
+  # - secretRef:
+  #     name: existing-secret-name
+
+additionalConfigs: []
+  # - configMapRef:
+  #     name:  existing-configMap-name
+
+additionalVolumeMounts: []
+  # - name: crypto-keys
+  #   mountPath: /etc/myapp/keys
+  #   readOnly: true
+
+additionalVolumes: []
+  # - name: crypto-keys
+  #   secret:
+  #     secretName: my-crypto-secret
+  #     items:
+  #       - key: bank_public.pem
+  #         path: bank_public.pem
 
 # autoscaling
 # This is used for scaling pods horizontally.
+
 autoscaling:
-  enabled: true
+  enabled: false
   minReplicas: 1
-  maxReplicas: 6
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 70
+
+# Gateway API HTTPRoute (replaces payaza-v2's classic Ingress).
+# One route attached to each listed Gateway listener; TLS is terminated by the
+# Gateway listener itself, so there is no tls block here.
+httpRoute:
+  enabled: false
+  annotations: {}
+  gateway:
+    name: rove10-gateway
+    namespace: traefik
+  sectionNames: []
+    # - web            # plain HTTP :80
+    # - websecure-dev  # HTTPS *.dev.rove10.com
+  hostnames: []
+    # - rove10-api.dev.rove10.com
+  # Leave empty to route everything (PathPrefix /) to this release's Service on
+  # service.protocol.http. Set to override with full HTTPRoute rules.
+  rules: []
 
 # persistent volume
 pv:

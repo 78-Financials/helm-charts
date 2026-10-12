@@ -3,29 +3,100 @@ kind: Deployment
 metadata:
   name: {{ .Values.deployment.name | quote }}
   namespace: {{ .Values.namespace | quote }}
+  {{- if .Values.deployment.annotations }}
+  annotations:
+    {{- toYaml .Values.deployment.annotations | nindent 4 }}
+  {{- end }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.deployment.replicas }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ .Values.deployment.name | quote }}
   template:
     metadata:
       annotations:
-        rollme: {{ randAlphaNum 5 | quote }}
+        {{- if .Values.deployment.annotations }}
+        {{- toYaml .Values.deployment.annotations | nindent 8 }}
+        {{- end }}
+        {{- if .Values.env.configmap.create }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- end }}
+        {{- if .Values.env.secret.create }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        {{- end }}
       labels:
         app: {{ .Values.deployment.name | quote }}
+        {{- if .Values.labels.serverless }}
+        serverless: {{ .Values.labels.serverless | quote }}
+        {{- end }}
+        {{- if .Values.deployment.blueGreen }}
+        version: {{ .Values.deployment.blue | quote }}
+        {{- else }}
         version: {{ .Values.deployment.tag | quote }}
+        {{- end }}
     spec:
+      {{- if or .Values.serviceAccount.create .Values.serviceAccount.name }}
+      serviceAccountName: {{ include "payaza.serviceAccountName" . | quote }}
+      {{- end }}
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: {{ .Values.deployment.name | quote }}
       containers:
         - name: {{ .Values.deployment.name | quote }}
+          {{- if .Values.deployment.blueGreen }}
+          image: {{ .Values.deployment.image }}:{{ .Values.deployment.blue }}
+          {{- else }}
           image: {{ .Values.deployment.image }}:{{ .Values.deployment.tag }}
+          {{- end }}
           imagePullPolicy: {{ .Values.deployment.pullPolicy }}
           ports:
           - containerPort: {{ .Values.deployment.port }}
-          {{- if .Values.volume.bind }}
+          {{- if or .Values.volume.bind .Values.additionalVolumeMounts }}
           volumeMounts:
+          {{- if .Values.volume.bind }}
           - name: {{ .Values.deployment.name | quote }}
             mountPath: {{ .Values.volume.path }}
+          {{- end }}
+          {{- if .Values.additionalVolumeMounts }}
+          {{- toYaml .Values.additionalVolumeMounts | nindent 10 }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.probes.readiness.enable }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }}
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+            successThreshold: {{ .Values.probes.readiness.successThreshold }}
+            failureThreshold: {{ .Values.probes.readiness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.probes.liveness.enable }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: {{ .Values.deployment.port }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+            successThreshold: {{ .Values.probes.liveness.successThreshold }}
+            failureThreshold: {{ .Values.probes.liveness.failureThreshold }}
+          {{- end }}
+          {{- if .Values.otelAgent.enabled }}
+          env:
+          - name: HOST_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: "http://$(HOST_IP):4317"
           {{- end }}
           {{- if .Values.env }}
           envFrom:
@@ -33,42 +104,54 @@ spec:
             - secretRef:
                 name: {{ .Values.deployment.name | quote }}
             {{- end}}
+            {{- if .Values.env.external_secret.create }}
+            - secretRef:
+                name: {{ include "payaza.externalSecretName" . | quote }}
+            {{- end}}
+            {{- if .Values.additionalSecrets }}
+            {{- toYaml .Values.additionalSecrets | nindent 12 }}
+            {{- end}}
             {{- if .Values.env.configmap.create }}
             - configMapRef:
                 name: {{ .Values.deployment.name | quote }}
             {{- end}}
+            {{- if .Values.additionalConfigs }}
+            {{- toYaml .Values.additionalConfigs | nindent 12 }}
+            {{- end}}
           {{- end }}
-          {{- if .Values.resources }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          {{- else }}
-          resources:
-            requests:
-              cpu: "10m"
-              memory: "50Mi"
-            limits:
-              memory: "100Mi"
-          {{- end }}
-      {{- if .Values.pvc.create }}
+      {{- if or .Values.pvc.create .Values.additionalVolumes }}
       volumes:
+      {{- if .Values.pvc.create }}
       - name: {{ .Values.deployment.name | quote }}
         persistentVolumeClaim:
           claimName: {{ .Values.pvc.name }}
-      {{- end}}
-      {{- if .Values.environment }}
-      nodeSelector:
-        environment: {{ .Values.environment.name | quote }}
       {{- end }}
-      {{- if .Values.tolerations.enabled }}
+      {{- if .Values.additionalVolumes }}
+      {{- toYaml .Values.additionalVolumes | nindent 6 }}
+      {{- end }}
+      {{- end }}
+      {{- if or .Values.environment .Values.nodeSelector }}
+      nodeSelector:
+        {{- if .Values.environment }}
+        environment: {{ .Values.environment.name | quote }}
+        {{- end }}
+        {{- if .Values.nodeSelector }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+        {{- end }}
+      {{- end }}
+      {{- if or .Values.tolerations.enabled .Values.additionalTolerations }}
       tolerations:
-      - key: "kubernetes.azure.com/scalesetpriority"
+      {{- if .Values.tolerations.enabled }}
+      - key: "environment"
         operator: "Equal"
-        value: "spot"
-        effect: "PreferNoSchedule"
-      - key: "kubernetes.azure.com/scalesetpriority"
-        operator: "Equal"
-        value: "spot"
+        value: {{ required "environment.name is required when tolerations.enabled is true" (.Values.environment).name | quote }}
         effect: "NoSchedule"
+      {{- end }}
+      {{- if .Values.additionalTolerations }}
+      {{- toYaml .Values.additionalTolerations | nindent 6 }}
+      {{- end }}
       {{- end }}
       imagePullSecrets:
         - name: regcred
